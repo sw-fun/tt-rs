@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "id": "tutorial-train-robot",
+    "name": "Tutorial: Train Your First Robot",
+    "description": "Teach a robot by showing it what to do. Watch it generalize to work on ANY number!",
+    "user_level": "tt1",
+    "is_bundled": true
+  },
+  "widgets": [
+    {
+      "type": "number",
+      "name": "training-number",
+      "numerator": 5,
+      "denominator": 1,
+      "operator": "+",
+      "position": { "x": 200, "y": 120 },
+      "is_copy_source": false
+    },
+    {
+      "type": "number",
+      "name": "test-number-3",
+      "numerator": 3,
+      "denominator": 1,
+      "operator": "+",
+      "position": { "x": 280, "y": 120 },
+      "is_copy_source": false
+    },
+    {
+      "type": "number",
+      "name": "test-number-8",
+      "numerator": 8,
+      "denominator": 1,
+      "operator": "+",
+      "position": { "x": 360, "y": 120 },
+      "is_copy_source": false
+    },
+    {
+      "type": "number",
+      "name": "test-number-2",
+      "numerator": 2,
+      "denominator": 1,
+      "operator": "+",
+      "position": { "x": 200, "y": 200 },
+      "is_copy_source": false
+    },
+    {
+      "type": "number",
+      "name": "test-number-9",
+      "numerator": 9,
+      "denominator": 1,
+      "operator": "+",
+      "position": { "x": 280, "y": 200 },
+      "is_copy_source": false
+    },
+    {
+      "type": "number",
+      "name": "test-number-4",
+      "numerator": 4,
+      "denominator": 1,
+      "operator": "+",
+      "position": { "x": 360, "y": 200 },
+      "is_copy_source": false
+    },
+    {
+      "type": "robot",
+      "name": "robot",
+      "position": { "x": 50, "y": 300 }
+    }
+  ],
+  "boxes": [
+    {
+      "name": "target-box",
+      "num_holes": 1,
+      "position": { "x": 50, "y": 120 },
+      "contents": [],
+      "erased": false,
+      "is_copy_source": false
+    }
+  ],
+  "notes": "Tutorial: Train Your First Robot\n\nWATCH THE DEMO (click 'Show Me'):\n\n1. TRAINING PHASE:\n   - Click robot to start training (yellow glow)\n   - Drag the 5 into the box\n   - Click robot to stop training\n   Robot learned: 'move a number into the box'\n\n2. EXECUTION PHASE:\n   - Click robot to run it\n   - Robot picks up ANY number and moves it!\n   - Keep clicking to run again...\n   - Watch it process ALL numbers!\n\nTHE KEY INSIGHT:\nWe trained with 5, but robot works on ANY number!\nThis is GENERALIZATION - the foundation of programming.\n\nTry it yourself:\n- Click Reset to start over\n- Train the robot differently\n- See what happens!",
+  "notes_position": { "x": 480, "y": 60 },
+  "notes_size": [380, 520],
+  "demo_steps": [
+    { "action": "wait", "duration": 1500 },
+
+    { "action": "move_to_target", "target": { "type": "widget", "name": "robot" }, "duration": 800 },
+    { "action": "click" },
+    { "action": "wait", "duration": 1200 },
+
+    { "action": "move_to_target", "target": { "type": "widget", "name": "training-number" }, "duration": 600 },
+    { "action": "drag_start" },
+    { "action": "move_to_target", "target": { "type": "box_hole", "name": "target-box", "hole": 0 }, "duration": 1000 },
+    { "action": "drag_end" },
+    { "action": "wait", "duration": 1000 },
+
+    { "action": "move_to_target", "target": { "type": "widget", "name": "robot" }, "duration": 600 },
+    { "action": "click" },
+    { "action": "wait", "duration": 1500 },
+
+    { "action": "move_to_target", "target": { "type": "widget", "name": "robot" }, "duration": 600 },
+    { "action": "click" },
+    { "action": "wait", "duration": 2000 },
+
+    { "action": "move_to_target", "target": { "type": "widget", "name": "robot" }, "duration": 600 },
+    { "action": "click" },
+    { "action": "wait", "duration": 2000 },
+
+    { "action": "move_to_target", "target": { "type": "widget", "name": "robot" }, "duration": 600 },
+    { "action": "click" },
+    { "action": "wait", "duration": 2000 },
+
+    { "action": "move_to_target", "target": { "type": "widget", "name": "robot" }, "duration": 600 },
+    { "action": "click" },
+    { "action": "wait", "duration": 2000 },
+
+    { "action": "move_to_target", "target": { "type": "widget", "name": "robot" }, "duration": 600 },
+    { "action": "click" },
+    { "action": "wait", "duration": 1500 }
+  ]
+}

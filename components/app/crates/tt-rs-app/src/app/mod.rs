@@ -197,6 +197,22 @@ pub fn app() -> Html {
                                     // Should be resolved before playback - skip
                                     log::warn!("MoveToTarget not resolved - skipping");
                                 }
+                                crate::workspace::DemoStep::Click => {
+                                    // Perform click operation at cursor position
+                                    let cursor_x = ds_for_timeout.cursor_x;
+                                    let cursor_y = ds_for_timeout.cursor_y;
+                                    log::info!(
+                                        "Demo Click: clicking at ({}, {})",
+                                        cursor_x,
+                                        cursor_y
+                                    );
+                                    crate::demo_ops::perform_click(
+                                        &app_state_for_timeout,
+                                        &dirty_for_timeout,
+                                        cursor_x,
+                                        cursor_y,
+                                    );
+                                }
                             }
                         }
 

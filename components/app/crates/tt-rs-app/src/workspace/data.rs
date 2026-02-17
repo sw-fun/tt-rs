@@ -154,6 +154,9 @@ pub struct ScalesData {
 /// Robot widget data.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RobotData {
+    /// Unique name for semantic targeting in demos.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Position in workspace.
     pub position: PositionData,
     /// Recorded actions (serialized).
@@ -316,4 +319,7 @@ pub enum DemoStep {
     /// End dragging at current position.
     #[serde(rename = "drag_end")]
     DragEnd,
+    /// Click at current position (mousedown + mouseup).
+    #[serde(rename = "click")]
+    Click,
 }

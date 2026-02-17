@@ -11,6 +11,7 @@ const PUZZLE_MAKE_NINE: &str = include_str!("../../assets/puzzles/puzzle-make-ni
 const TUTORIAL_FILL_BOX: &str = include_str!("../../assets/puzzles/tutorial-fill-box.json");
 const TUTORIAL_ADD_NUMBERS: &str = include_str!("../../assets/puzzles/tutorial-add-numbers.json");
 const TUTORIAL_COPY_WIDGET: &str = include_str!("../../assets/puzzles/tutorial-copy-widget.json");
+const TUTORIAL_TRAIN_ROBOT: &str = include_str!("../../assets/puzzles/tutorial-train-robot.json");
 
 /// Load a bundled puzzle or tutorial by ID.
 pub fn load_bundled_puzzle(id: &str) -> Option<Workspace> {
@@ -23,6 +24,7 @@ pub fn load_bundled_puzzle(id: &str) -> Option<Workspace> {
         "tutorial-fill-box" => TUTORIAL_FILL_BOX,
         "tutorial-add-numbers" => TUTORIAL_ADD_NUMBERS,
         "tutorial-copy-widget" => TUTORIAL_COPY_WIDGET,
+        "tutorial-train-robot" => TUTORIAL_TRAIN_ROBOT,
         _ => return None,
     };
 

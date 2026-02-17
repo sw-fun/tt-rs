@@ -4,7 +4,9 @@ All notable changes to tt-rs.
 
 ## 2026-02-17
 
-- feat: Implement Phase 0.1 Robot Held Widget State with type-based relative paths (`<latest>`)
+- feat: Add robot training tutorial with Show Me demo animation (`<latest>`)
+- deploy: Update live demo with Robot Held Widget State feature (`c66e8e2`)
+- feat: Implement Phase 0.1 Robot Held Widget State (`12ae227`)
 - deploy: Update live demo with robot MVP documentation (`0af1884`)
 - docs: Add comprehensive robot MVP design and update plan/PRD (`3c3bf28`)
 - docs: Update all URLs from wrightmikea to sw-fun organization (`f50b80d`)

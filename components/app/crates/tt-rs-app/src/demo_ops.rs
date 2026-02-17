@@ -72,6 +72,7 @@ pub fn find_widget_at(x: f64, y: f64) -> Option<(WidgetId, bool)> {
 
 /// Perform a drop operation at the given coordinates.
 /// This handles dropping widgets into box holes or onto drop zones.
+/// Also records training actions if a robot is in training mode.
 pub fn perform_drop(
     app_state: &UseStateHandle<AppState>,
     dirty: &UseStateHandle<bool>,
@@ -80,6 +81,8 @@ pub fn perform_drop(
     x: f64,
     y: f64,
 ) {
+    use tt_rs_robot::Action;
+
     // Check what's at the drop location
     if let Some((target_id, target_is_box)) = find_widget_at_excluding(x, y, dragged_id) {
         log::info!(
@@ -93,26 +96,55 @@ pub fn perform_drop(
         if target_is_box {
             // Dropping onto a box - try to find which hole
             if let Some(hole_index) = find_box_hole_at(&new_state, target_id, x, y) {
-                // Put widget in the box hole
-                if let Some(box_state) = new_state.boxes.get_mut(&target_id) {
-                    // Only insert if hole is empty, using entry API
-                    use std::collections::hash_map::Entry;
-                    if let Entry::Vacant(e) = box_state.contents.entry(hole_index) {
-                        e.insert(dragged_id);
-                        new_state
-                            .widget_in_box
-                            .insert(dragged_id, (target_id, hole_index));
-                        // Remove from free positions since it's now in a box
-                        new_state.positions.remove(&dragged_id);
-                        log::info!(
-                            "Demo: placed widget {:?} in box {:?} hole {}",
-                            dragged_id,
-                            target_id,
-                            hole_index
-                        );
-                        app_state.set(new_state);
-                        dirty.set(true);
+                // Check if hole is empty before proceeding
+                let hole_empty = new_state
+                    .boxes
+                    .get(&target_id)
+                    .map(|b| b.widget_in_hole(hole_index).is_none())
+                    .unwrap_or(false);
+
+                if hole_empty {
+                    // Record training actions if a robot is in training mode
+                    // Record PickUp: where did widget come from?
+                    if let Some((src_box, src_hole)) =
+                        new_state.widget_in_box.get(&dragged_id).copied()
+                    {
+                        new_state.record_action(Action::PickUp {
+                            path: format!("box:{}:hole:{}", src_box, src_hole),
+                        });
+                    } else {
+                        // Widget was in workspace - use type-based path
+                        let widget_type = new_state
+                            .widgets
+                            .get(&dragged_id)
+                            .map(|w| w.type_name())
+                            .unwrap_or("unknown");
+                        new_state.record_action(Action::PickUp {
+                            path: format!("workspace:{}", widget_type),
+                        });
                     }
+                    // Record Drop action
+                    new_state.record_action(Action::Drop {
+                        path: format!("box:{}:hole:{}", target_id, hole_index),
+                    });
+
+                    // Now place the widget
+                    if let Some(box_state) = new_state.boxes.get_mut(&target_id) {
+                        box_state.place_in_hole(hole_index, dragged_id);
+                    }
+                    new_state
+                        .widget_in_box
+                        .insert(dragged_id, (target_id, hole_index));
+                    // Remove from free positions since it's now in a box
+                    new_state.positions.remove(&dragged_id);
+                    log::info!(
+                        "Demo: placed widget {:?} in box {:?} hole {}",
+                        dragged_id,
+                        target_id,
+                        hole_index
+                    );
+                    app_state.set(new_state);
+                    dirty.set(true);
                 }
             }
         } else {
@@ -131,6 +163,88 @@ pub fn perform_drop(
                 app_state.set(new_state);
                 dirty.set(true);
             }
+        }
+    }
+}
+
+/// Perform a click operation at the given coordinates.
+/// Handles robot clicks (toggle training/execute) for demo playback.
+pub fn perform_click(
+    app_state: &UseStateHandle<AppState>,
+    dirty: &UseStateHandle<bool>,
+    x: f64,
+    y: f64,
+) {
+    // Find widget at the click location
+    if let Some((target_id, _is_box)) = find_widget_at(x, y) {
+        let mut new_state = (**app_state).clone();
+
+        // Check if it's a robot
+        if let Some(crate::widget_item::WidgetItem::Robot(_)) = new_state.widgets.get(&target_id) {
+            log::info!("Demo click: clicking on robot {:?}", target_id);
+            // Use the robot click logic
+            handle_robot_click_demo(&mut new_state, target_id);
+            app_state.set(new_state);
+            dirty.set(true);
+        } else {
+            log::info!("Demo click: clicked on non-robot widget {:?}", target_id);
+        }
+    }
+}
+
+/// Handle robot click for demo: toggle training or execute.
+/// Simplified version without distance checks.
+fn handle_robot_click_demo(state: &mut AppState, id: WidgetId) {
+    use crate::robot_exec::execute_robot;
+    use crate::widget_item::WidgetItem;
+    use tt_rs_robot::RobotState;
+
+    // Get robot state and action info
+    let (robot_state, has_actions) = state
+        .widgets
+        .get(&id)
+        .and_then(|w| match w {
+            WidgetItem::Robot(r) => Some((r.state(), !r.actions().is_empty())),
+            _ => None,
+        })
+        .unwrap_or((RobotState::Idle, false));
+
+    log::info!(
+        "Demo robot click: state={:?}, has_actions={}",
+        robot_state,
+        has_actions
+    );
+
+    match robot_state {
+        RobotState::Training => {
+            // Stop training
+            if let Some(WidgetItem::Robot(robot)) = state.widgets.get_mut(&id) {
+                robot.stop_training();
+                log::info!("Demo: stopped robot training");
+            }
+            state.training_robot_id = None;
+        }
+        RobotState::Idle if has_actions => {
+            // Execute the robot
+            log::info!("Demo: executing trained robot");
+            execute_robot(state, id);
+        }
+        RobotState::Idle => {
+            // Start training
+            if let Some(old_id) = state.training_robot_id {
+                if let Some(WidgetItem::Robot(robot)) = state.widgets.get_mut(&old_id) {
+                    robot.stop_training();
+                }
+                state.training_robot_id = None;
+            }
+            if let Some(WidgetItem::Robot(r)) = state.widgets.get_mut(&id) {
+                r.start_training();
+                log::info!("Demo: started robot training");
+            }
+            state.training_robot_id = Some(id);
+        }
+        RobotState::Working => {
+            log::info!("Demo: robot is working");
         }
     }
 }

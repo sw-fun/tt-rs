@@ -144,6 +144,12 @@ struct TutorialPuzzle {
 /// Two-part tutorials with Show Me examples.
 const TUTORIALS: &[TutorialPuzzle] = &[
     TutorialPuzzle {
+        id: "tutorial-train-robot",
+        name: "Train Your First Robot",
+        description: "Teach a robot by demonstration - watch it generalize!",
+        difficulty: "Beginner",
+    },
+    TutorialPuzzle {
         id: "tutorial-fill-box",
         name: "Fill a Box",
         description: "Learn to put numbers into boxes (with Show Me)",

@@ -68,6 +68,7 @@ pub fn to_workspace(state: &AppState, metadata: WorkspaceMetadata) -> Workspace 
 fn get_widget_name(data: &WidgetData) -> Option<String> {
     match data {
         WidgetData::Number(n) => n.name.clone(),
+        WidgetData::Robot(r) => r.name.clone(),
         WidgetData::DropZone(dz) => dz.role.clone(),
         // Other widget types don't have names yet (add as needed)
         _ => None,
@@ -194,6 +195,7 @@ fn widget_to_data(widget: &WidgetItem, pos: &Position) -> Option<WidgetData> {
             right_value: s.right_value(),
         })),
         WidgetItem::Robot(r) => Some(WidgetData::Robot(RobotData {
+            name: None, // Robot names not preserved during serialization
             position,
             actions: actions_to_data(r),
             is_trained: !r.actions().is_empty(),

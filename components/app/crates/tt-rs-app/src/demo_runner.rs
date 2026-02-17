@@ -101,6 +101,10 @@ pub fn process_next_step(state: &DemoState) -> Option<DemoState> {
         DemoStep::DragEnd => {
             new_state.is_dragging = false;
         }
+        DemoStep::Click => {
+            // Click is handled by the app's demo handler - just mark state
+            // The actual click logic happens in the app based on cursor position
+        }
     }
 
     // Check if demo is complete
@@ -124,5 +128,6 @@ pub fn get_step_delay(state: &DemoState) -> u32 {
         DemoStep::MoveToTarget { duration, .. } => *duration + 200, // Should be resolved
         DemoStep::DragStart => 400,
         DemoStep::DragEnd => 400,
+        DemoStep::Click => 500, // Brief pause for click animation
     }
 }
