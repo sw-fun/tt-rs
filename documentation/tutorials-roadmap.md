@@ -13,7 +13,7 @@ Following Ken Kahn's approach from the original ToonTalk:
 
 ## Current Demo (Live)
 
-**URL**: https://wrightmikea.github.io/tt-rs/
+**URL**: https://sw-fun.github.io/tt-rs/
 
 **Features demonstrated:**
 - Dragging widgets from the copy source palette
@@ -384,8 +384,8 @@ Current help panel sections map to tutorials:
 Tutorials and puzzles are loaded via hash-based URLs for GitHub Pages compatibility:
 
 ```
-https://wrightmikea.github.io/tt-rs/#/tutorial/counting-down
-https://wrightmikea.github.io/tt-rs/#/puzzle/fill-a-box
+https://sw-fun.github.io/tt-rs/#/tutorial/counting-down
+https://sw-fun.github.io/tt-rs/#/puzzle/fill-a-box
 ```
 
 **Benefits:**

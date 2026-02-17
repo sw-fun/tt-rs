@@ -28,7 +28,7 @@ old-tt-rs history ──> tt-rs (imported) ──> refactoring commits (file mov
 
 ### Step 1.1: Add old-tt-rs as remote
 ```bash
-cd /Users/mike/github/wrightmikea/tt-rs
+cd /Users/mike/github/sw-fun/tt-rs
 git remote add old-origin ../old-tt-rs
 git fetch old-origin
 ```
@@ -52,7 +52,7 @@ git remote remove old-origin
 
 ### Step 1.5: Set up new GitHub remote (when ready)
 ```bash
-git remote add origin git@github.com:wrightmikea/tt-rs.git
+git remote add origin git@github.com:sw-fun/tt-rs.git
 ```
 
 - [ ] 1.1 Add old-tt-rs as remote
@@ -164,7 +164,7 @@ members = [
 version = "0.1.0"
 edition = "2024"
 license = "BSD-3-Clause"
-repository = "https://github.com/wrightmikea/tt-rs"
+repository = "https://github.com/sw-fun/tt-rs"
 
 [workspace.dependencies]
 yew = { version = "0.21", features = ["csr"] }
@@ -188,7 +188,7 @@ members = [
 version = "0.1.0"
 edition = "2024"
 license = "BSD-3-Clause"
-repository = "https://github.com/wrightmikea/tt-rs"
+repository = "https://github.com/sw-fun/tt-rs"
 
 [workspace.dependencies]
 yew = { version = "0.21", features = ["csr"] }
@@ -213,7 +213,7 @@ members = [
 version = "0.1.0"
 edition = "2024"
 license = "BSD-3-Clause"
-repository = "https://github.com/wrightmikea/tt-rs"
+repository = "https://github.com/sw-fun/tt-rs"
 
 [workspace.dependencies]
 yew = { version = "0.21", features = ["csr"] }
@@ -241,7 +241,7 @@ members = [
 version = "0.1.0"
 edition = "2024"
 license = "BSD-3-Clause"
-repository = "https://github.com/wrightmikea/tt-rs"
+repository = "https://github.com/sw-fun/tt-rs"
 
 [workspace.dependencies]
 yew = { version = "0.21", features = ["csr"] }

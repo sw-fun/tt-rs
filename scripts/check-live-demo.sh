@@ -53,7 +53,7 @@ if [ "$CODE_TIME" -gt "$DOCS_TIME" ]; then
     echo "  git commit -m 'deploy: Update live demo with <description>'"
     echo "  git push"
     echo ""
-    echo "Then verify at https://wrightmikea.github.io/tt-rs/"
+    echo "Then verify at https://sw-fun.github.io/tt-rs/"
     echo "==========================="
     exit 1
 elif [ -n "$DOCS_DIRTY" ]; then

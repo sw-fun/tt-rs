@@ -8,10 +8,10 @@ const BUILD_HOST: &str = env!("BUILD_HOST");
 const BUILD_TIME: &str = env!("BUILD_TIME");
 
 // Links
-const LICENSE_URL: &str = "https://github.com/wrightmikea/tt-rs/blob/main/LICENSE";
-const REPO_URL: &str = "https://github.com/wrightmikea/tt-rs";
-const CHANGELOG_URL: &str = "https://github.com/wrightmikea/tt-rs/blob/main/CHANGELOG.md";
-const COMMIT_URL_BASE: &str = "https://github.com/wrightmikea/tt-rs/commit/";
+const LICENSE_URL: &str = "https://github.com/sw-fun/tt-rs/blob/main/LICENSE";
+const REPO_URL: &str = "https://github.com/sw-fun/tt-rs";
+const CHANGELOG_URL: &str = "https://github.com/sw-fun/tt-rs/blob/main/CHANGELOG.md";
+const COMMIT_URL_BASE: &str = "https://github.com/sw-fun/tt-rs/commit/";
 
 /// Footer component displaying build and project info.
 #[function_component(Footer)]

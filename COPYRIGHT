@@ -15,7 +15,7 @@ Copyright Notices:
 
   tt-rs (Rust/WebAssembly):
     Copyright (c) 2025-2026, Michael A Wright
-    https://github.com/wrightmikea/tt-rs
+    https://github.com/sw-fun/tt-rs
 
 Note: tt-rs is a clean-room reimplementation inspired by the original ToonTalk
 implementations. It is not a fork of the original codebase but a fresh

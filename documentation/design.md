@@ -966,12 +966,12 @@ URL routing enables:
 ### URL Structure
 
 ```
-https://wrightmikea.github.io/tt-rs/
-https://wrightmikea.github.io/tt-rs/#/tutorial/fill-a-box
-https://wrightmikea.github.io/tt-rs/#/tutorial/make-a-4
-https://wrightmikea.github.io/tt-rs/#/example/counting-robot
-https://wrightmikea.github.io/tt-rs/#/challenge/factorial
-https://wrightmikea.github.io/tt-rs/#/workspace/{uuid}
+https://sw-fun.github.io/tt-rs/
+https://sw-fun.github.io/tt-rs/#/tutorial/fill-a-box
+https://sw-fun.github.io/tt-rs/#/tutorial/make-a-4
+https://sw-fun.github.io/tt-rs/#/example/counting-robot
+https://sw-fun.github.io/tt-rs/#/challenge/factorial
+https://sw-fun.github.io/tt-rs/#/workspace/{uuid}
 ```
 
 Using hash-based routing (`#/path`) for GitHub Pages compatibility (no server-side routing).

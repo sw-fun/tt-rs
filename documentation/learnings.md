@@ -336,7 +336,7 @@ if let Some(num_holes) = pending {
 
 ## CRITICAL: Live Demo Must Always Be Current
 
-**Problem:** Feature commits were pushed without updating the live demo at https://wrightmikea.github.io/tt-rs/, leaving users with an outdated version.
+**Problem:** Feature commits were pushed without updating the live demo at https://sw-fun.github.io/tt-rs/, leaving users with an outdated version.
 
 **Root Cause:** The deployment step was documented but not enforced as mandatory in the workflow.
 
@@ -359,7 +359,7 @@ git add docs/
 git commit -m "deploy: Update live demo with <feature/fix description>"
 git push
 
-# 5. Verify live demo at https://wrightmikea.github.io/tt-rs/
+# 5. Verify live demo at https://sw-fun.github.io/tt-rs/
 ```
 
 **Key Rules:**

@@ -302,7 +302,7 @@ Fixes #42
 
 **CRITICAL: The live demo MUST be updated after EVERY feature or fix that changes behavior.**
 
-The live demo at https://wrightmikea.github.io/tt-rs/ is the primary way users experience tt-rs. Leaving it out of date is unacceptable.
+The live demo at https://sw-fun.github.io/tt-rs/ is the primary way users experience tt-rs. Leaving it out of date is unacceptable.
 
 ### Complete Feature/Fix Workflow
 
@@ -321,7 +321,7 @@ git add docs/
 git commit -m "deploy: Update live demo with <feature/fix description>"
 git push
 
-# 5. Verify live demo at https://wrightmikea.github.io/tt-rs/
+# 5. Verify live demo at https://sw-fun.github.io/tt-rs/
 ```
 
 ### DO NOT:

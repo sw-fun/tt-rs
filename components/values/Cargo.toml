@@ -9,7 +9,7 @@ members = [
 version = "0.1.0"
 edition = "2021"
 license = "BSD-3-Clause"
-repository = "https://github.com/wrightmikea/tt-rs"
+repository = "https://github.com/sw-fun/tt-rs"
 
 [workspace.dependencies]
 yew = { version = "0.21", features = ["csr"] }

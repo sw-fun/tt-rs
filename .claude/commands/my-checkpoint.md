@@ -88,7 +88,7 @@ git push
 
 ### 9. Verification
 After push, verify:
-- Live demo works: https://wrightmikea.github.io/tt-rs/
+- Live demo works: https://sw-fun.github.io/tt-rs/
 - README screenshot shows current UI (tt2 with Bird/Nest help expanded)
 - CHANGELOG includes all recent commits with correct SHAs
 

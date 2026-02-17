@@ -6,7 +6,7 @@ This document provides a checklist for manually testing the drag-and-drop functi
 
 1. Start the development server:
    ```bash
-   cd /Users/mike/github/wrightmikea/tt-rs
+   cd /Users/mike/github/sw-fun/tt-rs
    trunk serve --port 1140
    ```
 
