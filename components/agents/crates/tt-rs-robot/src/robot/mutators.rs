@@ -38,5 +38,16 @@ impl Robot {
     /// Stops working mode.
     pub fn stop_working(&mut self) {
         self.state = RobotState::Idle;
+        self.held_widget_id = None;
+    }
+
+    /// Picks up a widget (stores its ID).
+    pub fn pick_up(&mut self, widget_id: WidgetId) {
+        self.held_widget_id = Some(widget_id);
+    }
+
+    /// Drops the held widget and returns its ID.
+    pub fn drop_held(&mut self) -> Option<WidgetId> {
+        self.held_widget_id.take()
     }
 }

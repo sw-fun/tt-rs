@@ -4,7 +4,9 @@ All notable changes to tt-rs.
 
 ## 2026-02-17
 
-- docs: Add comprehensive robot MVP design and update plan/PRD (`<latest>`)
+- feat: Implement Phase 0.1 Robot Held Widget State with type-based relative paths (`<latest>`)
+- deploy: Update live demo with robot MVP documentation (`0af1884`)
+- docs: Add comprehensive robot MVP design and update plan/PRD (`3c3bf28`)
 - docs: Update all URLs from wrightmikea to sw-fun organization (`f50b80d`)
 - docs: Update copyright to 2025-2026, prioritize robot programming as MVP (`b7b3489`)
 

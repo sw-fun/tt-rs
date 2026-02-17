@@ -27,6 +27,26 @@ pub fn handle_box_hole_drop(
     }
 
     eject_existing(state, box_id, hole, event);
+
+    // Record PickUp action: where did widget come from?
+    // Check if it was in a box hole
+    if let Some((src_box, src_hole)) = state.widget_in_box.get(&id).copied() {
+        state.record_action(Action::PickUp {
+            path: format!("box:{}:hole:{}", src_box, src_hole),
+        });
+    } else {
+        // Widget was in workspace - use type-based path for generalization
+        let widget_type = state
+            .widgets
+            .get(&id)
+            .map(|w| w.type_name())
+            .unwrap_or("unknown");
+        state.record_action(Action::PickUp {
+            path: format!("workspace:{}", widget_type),
+        });
+    }
+
+    // Record Drop action
     state.record_action(Action::Drop {
         path: format!("box:{}:hole:{}", box_id, hole),
     });

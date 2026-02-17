@@ -20,6 +20,11 @@ impl Robot {
         self.pattern
     }
 
+    /// Returns what the robot is currently holding during execution.
+    pub fn held_widget(&self) -> Option<WidgetId> {
+        self.held_widget_id
+    }
+
     /// Creates a copy of this robot with a new ID.
     pub fn copy_robot(&self) -> Robot {
         Robot::new_with(self.pattern, self.actions.clone(), self.next_robot)

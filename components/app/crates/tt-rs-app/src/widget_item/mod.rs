@@ -77,6 +77,21 @@ impl WidgetItem {
         }
     }
 
+    /// Returns the type name of this widget (e.g., "number", "robot").
+    pub fn type_name(&self) -> &'static str {
+        match self {
+            WidgetItem::Number(_) => "number",
+            WidgetItem::Text(_) => "text",
+            WidgetItem::Scales(_) => "scales",
+            WidgetItem::Vacuum(_) => "vacuum",
+            WidgetItem::Wand(_) => "wand",
+            WidgetItem::Robot(_) => "robot",
+            WidgetItem::Nest(_) => "nest",
+            WidgetItem::Bird(_) => "bird",
+            WidgetItem::DropZone(_) => "dropzone",
+        }
+    }
+
     /// Returns true if this widget is a copy source (palette item).
     /// Note: Only widgets that track copy source status have the method.
     /// Others (Text, Scales, tools) are never copy sources in practice.

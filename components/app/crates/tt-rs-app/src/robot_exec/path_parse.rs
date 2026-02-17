@@ -23,3 +23,13 @@ pub fn parse_box_hole_path(path: &str) -> Option<(WidgetId, usize)> {
         None
     }
 }
+
+/// Parse "workspace:number" -> widget type string.
+pub fn parse_workspace_type_path(path: &str) -> Option<&str> {
+    let parts: Vec<&str> = path.split(':').collect();
+    if parts.len() == 2 && parts[0] == "workspace" {
+        Some(parts[1])
+    } else {
+        None
+    }
+}

@@ -72,6 +72,8 @@ pub struct AppState {
     pub box_names: HashMap<String, WidgetId>,
     /// Map of dropzone roles to their IDs (e.g., "example" -> dropzone_id).
     pub dropzone_roles: HashMap<String, WidgetId>,
+    /// ID of robot currently executing (for held widget tracking).
+    pub executing_robot_id: Option<WidgetId>,
 }
 
 impl AppState {
@@ -98,6 +100,7 @@ impl AppState {
             widget_names: HashMap::new(),
             box_names: HashMap::new(),
             dropzone_roles: HashMap::new(),
+            executing_robot_id: None,
         }
     }
 

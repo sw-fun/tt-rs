@@ -1,9 +1,10 @@
 //! Individual robot action handlers.
 
+use tt_rs_core::WidgetId;
 use tt_rs_drag::Position;
 use tt_rs_number::{ArithOperator, Number};
 
-use super::path_parse::{parse_box_hole_path, parse_widget_path};
+use super::path_parse::{parse_box_hole_path, parse_widget_path, parse_workspace_type_path};
 use crate::state::AppState;
 use crate::widget_item::WidgetItem;
 
@@ -53,13 +54,116 @@ pub fn execute_remove(state: &mut AppState, path: &str) {
     }
 }
 
-pub fn execute_drop(path: &str) {
+/// Execute a PickUp action: remove widget from source and store in robot.
+pub fn execute_pickup(state: &mut AppState, robot_id: WidgetId, path: &str) {
+    // Try parsing as box hole first
     if let Some((box_id, hole)) = parse_box_hole_path(path) {
-        log::info!(
-            "Robot drop to box {} hole {} (needs held widget)",
-            box_id,
-            hole
-        );
+        // Pick up from box hole
+        if let Some(b) = state.boxes.get_mut(&box_id) {
+            if let Some(widget_id) = b.clear_hole(hole) {
+                state.widget_in_box.remove(&widget_id);
+                // Store in robot's held widget
+                if let Some(WidgetItem::Robot(r)) = state.widgets.get_mut(&robot_id) {
+                    r.pick_up(widget_id);
+                    log::info!("Robot picked up widget {} from box hole", widget_id);
+                }
+            }
+        }
+        return;
+    }
+
+    // Try parsing as workspace type (e.g., "workspace:number")
+    if let Some(widget_type) = parse_workspace_type_path(path) {
+        // Find first widget of this type in workspace (has position, not in box)
+        let widget_id = state
+            .positions
+            .keys()
+            .find(|&id| {
+                // Must not be in a box
+                if state.widget_in_box.contains_key(id) {
+                    return false;
+                }
+                // Must match the type
+                state
+                    .widgets
+                    .get(id)
+                    .map(|w| w.type_name() == widget_type && !w.is_copy_source())
+                    .unwrap_or(false)
+            })
+            .copied();
+
+        if let Some(widget_id) = widget_id {
+            state.positions.remove(&widget_id);
+            if let Some(WidgetItem::Robot(r)) = state.widgets.get_mut(&robot_id) {
+                r.pick_up(widget_id);
+                log::info!(
+                    "Robot picked up {} widget {} from workspace",
+                    widget_type,
+                    widget_id
+                );
+            }
+        } else {
+            log::warn!("No {} widget found in workspace", widget_type);
+        }
+        return;
+    }
+
+    // Try parsing as specific widget ID (fallback)
+    if let Some(widget_id) = parse_widget_path(path) {
+        if state.widgets.contains_key(&widget_id) {
+            state.positions.remove(&widget_id);
+            if let Some(WidgetItem::Robot(r)) = state.widgets.get_mut(&robot_id) {
+                r.pick_up(widget_id);
+                log::info!("Robot picked up widget {} from workspace", widget_id);
+            }
+        }
+    }
+}
+
+/// Execute a Drop action: place robot's held widget at target.
+pub fn execute_drop(state: &mut AppState, robot_id: WidgetId, path: &str) {
+    // Get held widget from robot
+    let held_id = {
+        if let Some(WidgetItem::Robot(r)) = state.widgets.get_mut(&robot_id) {
+            r.drop_held()
+        } else {
+            None
+        }
+    };
+
+    let widget_id = match held_id {
+        Some(id) => id,
+        None => {
+            log::warn!("Robot has no held widget to drop");
+            return;
+        }
+    };
+
+    // Try parsing as box hole
+    if let Some((box_id, hole)) = parse_box_hole_path(path) {
+        // Place in box hole
+        if let Some(b) = state.boxes.get_mut(&box_id) {
+            b.place_in_hole(hole, widget_id);
+            state.widget_in_box.insert(widget_id, (box_id, hole));
+            state.update_scales_in_box(box_id);
+            log::info!(
+                "Robot dropped widget {} into box {} hole {}",
+                widget_id,
+                box_id,
+                hole
+            );
+        }
+        return;
+    }
+
+    // Try parsing as workspace position (widget path used as position reference)
+    if let Some(ref_id) = parse_widget_path(path) {
+        // Place near the reference widget
+        let pos = state.positions.get(&ref_id).copied().unwrap_or_default();
+        state
+            .positions
+            .insert(widget_id, Position::new(pos.x + 30.0, pos.y + 30.0));
+        log::info!("Robot dropped widget {} near widget {}", widget_id, ref_id);
     }
 }
 

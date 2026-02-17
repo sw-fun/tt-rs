@@ -167,6 +167,7 @@ pub fn from_workspace(workspace: &Workspace) -> AppState {
         widget_names,
         box_names,
         dropzone_roles,
+        executing_robot_id: None,
     }
 }
 

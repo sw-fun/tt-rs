@@ -23,6 +23,8 @@ pub struct Robot {
     pub(crate) actions: Vec<Action>,
     /// Next robot in chain (optional).
     pub(crate) next_robot: Option<WidgetId>,
+    /// Widget currently being held by robot during execution.
+    pub(crate) held_widget_id: Option<WidgetId>,
 }
 
 impl Robot {
@@ -34,6 +36,7 @@ impl Robot {
             pattern: None,
             actions: Vec::new(),
             next_robot: None,
+            held_widget_id: None,
         }
     }
 
@@ -49,6 +52,7 @@ impl Robot {
             pattern,
             actions,
             next_robot: next,
+            held_widget_id: None,
         }
     }
 }
