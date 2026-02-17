@@ -89,6 +89,143 @@ Following Ken Kahn's approach from the original ToonTalk:
 
 ---
 
+## Robot MVP Tutorial Series
+
+These tutorials are designed for blog/vlog demonstration and map to implementation phases.
+See [robot-mvp-design.md](robot-mvp-design.md) for technical details.
+
+### RT1: The Adding Robot (Tier 1 - Works Now)
+
+**Implementation Phase**: None - should work with current code
+
+**Learning Goal**: Basic training and replay
+
+**Setup**: Number "7", number "+5", robot
+
+**Steps**:
+1. Click robot (yellow glow = training)
+2. Drag +5 onto 7 (becomes 12)
+3. Click robot (training stops)
+4. Drag new number "3" to workspace
+5. Click robot (replays: adds 5 to... wait, it adds 5 to the original 7!)
+
+**Discussion Point**: This reveals a limitation - robot recorded "add 5 to widget #7", not "add 5 to whatever number is there". This motivates pattern matching.
+
+### RT2: The Organizer (Tier 2 - Needs Held Widget)
+
+**Implementation Phase**: Phase 0.1 (Held Widget State)
+
+**Learning Goal**: Pick up and drop actions
+
+**Setup**: Number "42", empty 2-hole box, robot
+
+**Steps**:
+1. Click robot to train
+2. Drag number 42 into box hole 0
+3. Click robot to stop
+4. Place new number outside box
+5. Click robot - it picks up number and puts it in box
+
+**Key Insight**: Robot learned "pick up the number, put it in hole 0"
+
+### RT3: Watch the Robot Work (Tier 2 - Needs Watched Execution)
+
+**Implementation Phase**: Phase 0.2 (Watched Execution)
+
+**Learning Goal**: See robot's actions step-by-step
+
+**Setup**: Same as RT2, but with watched mode enabled
+
+**Steps**:
+1. Train robot as in RT2
+2. Enable "Watch Robot" mode
+3. Click robot to run
+4. See animated cursor pick up widget, move to box, drop it
+5. Adjust speed: slow, normal, fast, step-by-step
+
+**Visual Elements**:
+- Robot cursor (small hand icon)
+- Trail showing movement path
+- Highlight on current target
+- Speed slider or buttons
+
+### RT4: Make It Work for Any Number (Tier 3 - Needs Pattern Matching)
+
+**Implementation Phase**: Phase 0.3 (Pattern Matching)
+
+**Learning Goal**: Generalization through erasure
+
+**Setup**: Robot trained on specific number (e.g., 7)
+
+**Steps**:
+1. Robot currently only works on "7"
+2. Open robot's "thought bubble" (conditions view)
+3. Use vacuum on the "7" - it becomes a blank/ghost
+4. Now robot works on ANY number
+5. Test with 42, 100, -5 - all work!
+
+**Key Concepts**:
+- "Erased" = "matches anything of same type"
+- Vacuum removes detail, making patterns more general
+- This is how one training generalizes to infinite inputs
+
+### RT5: The Doubler (Tier 3 - Needs Value Bindings)
+
+**Implementation Phase**: Phase 0.4 (Relative Paths)
+
+**Learning Goal**: Robot uses matched input in actions
+
+**Setup**: Number, robot, trained to "double"
+
+**Steps**:
+1. Train robot on number 5
+2. Copy the 5 (with wand)
+3. Drop copy onto original (5 + 5 = 10)
+4. Erase the condition
+5. Test: give robot 7, get 14
+
+**Why This Matters**: Robot doesn't just replay "copy widget #5", it copies "the matched input" - whatever that is.
+
+### RT6: Maximum Finder (Tier 4 - Needs Scales)
+
+**Implementation Phase**: Requires scales in conditions
+
+**Learning Goal**: Conditional behavior
+
+**Setup**: Box with [5, 3], scales, two robots
+
+**Robot 1**:
+1. Train: put numbers on scales
+2. Scales tip left (5 > 3)
+3. Pick up left number (the bigger one)
+4. Erase numbers in condition
+
+**Robot 2** (handles other case):
+1. Train when scales tip right
+2. Pick up right number
+
+**Result**: Robot team always returns the larger number
+
+### RT7: Count to 10 (Tier 5 - Needs Bird/Nest)
+
+**Implementation Phase**: Bird/Nest messaging + robot recursion
+
+**Learning Goal**: Loops through message passing
+
+**Setup**: Nest with number 1, bird paired to nest, robot, scales
+
+**Steps**:
+1. Robot receives number from nest
+2. Compare to 10 with scales
+3. If less: add 1, give to bird
+4. Bird delivers to nest
+5. Robot activates again
+6. Repeat until 10
+
+**Key Insight**: No explicit loop construct - recursion through messaging
+
+---
+
 ## Phase 1 Tutorials: Current Features
 
 ### Tutorial 1.1: Numbers and Arithmetic

@@ -2,9 +2,16 @@
 
 All notable changes to tt-rs.
 
+## 2026-02-17
+
+- docs: Add comprehensive robot MVP design and update plan/PRD (`<latest>`)
+- docs: Update all URLs from wrightmikea to sw-fun organization (`f50b80d`)
+- docs: Update copyright to 2025-2026, prioritize robot programming as MVP (`b7b3489`)
+
 ## 2025-11-30
 
-- Add Show Me animated demo for puzzles/tutorials (`<latest>`)
+- deploy: Update live demo with Show Me animated demo feature (`305e9ae`)
+- feat: Add "Show Me" animated demo for puzzles/tutorials (`6047d9b`)
 - deploy: Update live demo with URL routing, Reset, and larger Workspace Notes (`d7868c2`)
 - feat: Add URL routing, Reset button, confirmation dialogs, larger Workspace Notes (`a8bbe19`)
 - docs: Add puzzle usability requirements and design for Reset, URL routing, Undo, Show Me (`2e42c94`)

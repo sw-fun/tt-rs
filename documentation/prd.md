@@ -136,17 +136,37 @@ Goal: Match the core functionality of the 2017 JavaScript version.
 | FR2.2 | Vacuum (remove) | Must Have | ✅ Done |
 | FR2.3 | Vacuum (erase - pattern creation) | Should Have | ❌ Pending |
 
-#### FR3: Robot Programming (MVP)
+#### FR3: Robot Programming (MVP) - PRIORITY FOCUS
 
-| ID | Feature | Priority | Status |
-|----|---------|----------|--------|
-| FR3.1 | Train by demonstration | Must Have | ✅ Done |
-| FR3.2 | Record action sequence | Must Have | ✅ Done |
-| FR3.3 | Execute unwatched | Must Have | ✅ Done |
-| FR3.4 | Pattern matching (conditions) | Must Have | ❌ Pending |
-| FR3.5 | Erasure for generalization | Must Have | ❌ Pending |
-| FR3.6 | Watched execution (animated) | Should Have | ❌ Pending |
-| FR3.7 | Robot chaining | Should Have | ❌ Pending |
+**The robot is the core differentiating feature of ToonTalk.** This must be demo-ready for blog/vlog content.
+
+See [robot-mvp-design.md](robot-mvp-design.md) for detailed behavior specifications.
+
+| ID | Feature | Priority | Status | Notes |
+|----|---------|----------|--------|-------|
+| FR3.1 | Train by demonstration | Must Have | ✅ Done | Click to start/stop training |
+| FR3.2 | Record arithmetic actions | Must Have | ✅ Done | +, -, *, / operations recorded |
+| FR3.3 | Record copy/remove actions | Must Have | ✅ Done | Wand and vacuum recorded |
+| FR3.4 | **Held widget state** | Must Have | ❌ Pending | Robot tracks what it's holding |
+| FR3.5 | **PickUp action** | Must Have | ❌ Pending | Record/execute picking up widgets |
+| FR3.6 | **Drop action** | Must Have | ❌ Pending | Record/execute dropping held widget |
+| FR3.7 | Execute unwatched | Must Have | ✅ Done | Instant replay without animation |
+| FR3.8 | **Watched execution** | Must Have | ❌ Pending | Animated cursor shows actions |
+| FR3.9 | **Pattern matching** | Must Have | ❌ Pending | Check conditions before running |
+| FR3.10 | **Erasure for generalization** | Must Have | ❌ Pending | Vacuum erases values to "any" |
+| FR3.11 | **Relative paths** | Must Have | ❌ Pending | Reference widgets by role not ID |
+| FR3.12 | Robot teams | Should Have | ❌ Pending | Multiple robots for different cases |
+| FR3.13 | Speed control | Should Have | ❌ Pending | instant/slow/step-through modes |
+
+**Demo Milestones:**
+
+| Demo | Dependencies | Description |
+|------|--------------|-------------|
+| Tier 1: Add 5 | None (works now) | Robot adds constant to number |
+| Tier 2: Move to Box | FR3.4-FR3.6 | Robot picks up and places widget |
+| Tier 3: Generalize | FR3.9-FR3.11 | Robot works on ANY matching input |
+| Tier 4: Conditional | FR3.9 + Scales | Robot chooses based on comparison |
+| Tier 5: Recursive | Bird/Nest | Robot counts to 10, factorial, etc. |
 
 #### FR4: Workspace (MVP)
 

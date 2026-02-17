@@ -94,6 +94,53 @@ The robot currently records and replays basic actions. To be blog/vlog-ready:
 
 ## Short-Term Roadmap (Next 3 Iterations)
 
+### Iteration 0: Robot MVP (HIGHEST PRIORITY) - NEW
+
+**Goal**: Make robot programming demonstrable for blog/vlog content.
+
+See [robot-mvp-design.md](robot-mvp-design.md) for detailed behavior specifications.
+
+#### Phase 0.1: Held Widget State
+- [ ] Add `held_widget_id: Option<WidgetId>` to Robot struct
+- [ ] Record PickUp action on drag start during training
+- [ ] Record Drop action on drag end during training
+- [ ] Execute PickUp: remove widget from source, store in held
+- [ ] Execute Drop: place held widget at target
+
+#### Phase 0.2: Watched Execution
+- [ ] Create RobotCursor component (animated hand)
+- [ ] Animate cursor movement between source and target
+- [ ] Show held widget moving with cursor
+- [ ] Speed control: instant / normal / slow / step
+
+#### Phase 0.3: Pattern Matching
+- [ ] Store condition (snapshot) when training starts
+- [ ] Check condition.matches(context) before execution
+- [ ] Add ErasureLevel enum (Specific, Type)
+- [ ] Vacuum on condition increases erasure level
+- [ ] Erased widgets match more broadly
+
+#### Phase 0.4: Relative Paths
+- [ ] Create WidgetPath enum (Context, Held, BoxHole, Resource)
+- [ ] Record paths by role, not absolute widget ID
+- [ ] Resolve paths during execution
+
+#### Phase 0.5: Demo Tutorials
+- [ ] Tutorial 1: "Teach Your First Robot" (arithmetic)
+- [ ] Tutorial 2: "Move Things Around" (pick up/drop)
+- [ ] Tutorial 3: "Make It Work for Any Number" (generalization)
+- [ ] Pre-trained robot examples loadable from workspace
+
+**Demo Tiers** (what becomes possible at each phase):
+
+| Phase | Demo Possible |
+|-------|---------------|
+| 0.1 | Move number into box |
+| 0.2 | Watch robot work step-by-step |
+| 0.3 | Robot adds 5 to ANY number |
+| 0.4 | Robot uses input value in actions |
+| 0.5 | Complete training tutorial |
+
 ### Iteration 1: Bird/Nest Messaging (MVP Critical) - IN PROGRESS
 
 **Goal**: Enable asynchronous communication - the heart of ToonTalk's concurrency model.
