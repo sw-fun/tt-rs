@@ -28,6 +28,67 @@ Following Ken Kahn's approach from the original ToonTalk:
 
 ---
 
+## MVP Priority: Robot Training Tutorial
+
+**This is the primary tutorial for blog/vlog demonstrations.** The robot training experience is what makes ToonTalk unique - users teach robots by showing them what to do.
+
+### Tutorial: Teach Your First Robot (Blog/Vlog Ready)
+
+**Concept**: Programming by demonstration - show the robot once, it repeats forever
+
+**Duration**: 3-5 minutes (ideal for video demo)
+
+**Prerequisites**: None (this is the flagship tutorial)
+
+**Scenario**: Teach a robot to add 5 to any number
+
+**Steps**:
+
+1. **Setup the workspace**
+   - Drag a number "7" from the palette to the workspace
+   - Drag a "+5" number from the palette nearby
+   - Drag the robot to the workspace
+
+2. **Enter training mode**
+   - Click the robot (it glows yellow - "I'm watching!")
+   - The robot is now recording your actions
+
+3. **Demonstrate the task**
+   - Drag the "+5" onto the "7"
+   - Result: "12" appears
+   - This action is now recorded
+
+4. **Stop training**
+   - Click the robot again (glow stops)
+   - Robot now "knows" how to add 5
+
+5. **Test with new input**
+   - Drag a new number "3" to the workspace
+   - Click the robot to run
+   - Watch: robot picks up "+5" and drops it on "3" → "8"
+
+6. **Generalize (advanced)**
+   - Use vacuum on the "7" in robot's memory
+   - Now robot works on ANY number, not just 7
+
+**Key talking points for blog/vlog:**
+- "Programming without typing code"
+- "Show once, replay forever"
+- "The robot watches and learns"
+- "Erase details to make it work on any input"
+
+**Visual highlights**:
+- Yellow glow during training (recording indicator)
+- Thought bubble showing what robot learned
+- Animated replay during execution
+
+**Success criteria**:
+- User can train robot in <2 minutes
+- Robot successfully replays on different inputs
+- Concept of "teaching" is intuitive
+
+---
+
 ## Phase 1 Tutorials: Current Features
 
 ### Tutorial 1.1: Numbers and Arithmetic

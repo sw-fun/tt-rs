@@ -78,4 +78,4 @@ See [COPYRIGHT](COPYRIGHT) and [LICENSE](LICENSE) for full attribution and terms
 
 - Original ToonTalk (C++): Copyright (c) 1992-2009, Ken Kahn
 - ToonTalk Reborn (JavaScript): Copyright (c) 2014-2017, Ken Kahn
-- tt-rs (Rust/WebAssembly): Copyright (c) 2025, Michael A Wright
+- tt-rs (Rust/WebAssembly): Copyright (c) 2025-2026, Michael A Wright

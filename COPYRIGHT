@@ -14,8 +14,12 @@ Copyright Notices:
     https://github.com/ToonTalk/ToonTalk
 
   tt-rs (Rust/WebAssembly):
-    Copyright (c) 2025, Michael A Wright
+    Copyright (c) 2025-2026, Michael A Wright
     https://github.com/wrightmikea/tt-rs
+
+Note: tt-rs is a clean-room reimplementation inspired by the original ToonTalk
+implementations. It is not a fork of the original codebase but a fresh
+implementation in Rust and WebAssembly.
 
 All versions are licensed under the BSD 3-Clause License.
 See the LICENSE file for full license terms.

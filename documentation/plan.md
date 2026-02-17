@@ -8,11 +8,23 @@ This document outlines the implementation plan for tt-rs, tracking both current 
 1. **MVP Path**: Focus on ToonTalk Reborn (2017 jQuery) feature parity first
 2. **Full Vision**: Eventually implement all original ToonTalk (1995 C++) features plus new innovations
 
-**Note**: This is a derived work based on ToonTalk. See the COPYRIGHT file for attribution.
+**Note**: tt-rs is a clean-room reimplementation inspired by the original ToonTalk implementations (not a fork). See the COPYRIGHT file for attribution.
+
+### MVP Priority: Robot Programming
+
+**The core MVP feature is robot training and execution** - the ability to teach a robot by demonstration and have it replay those actions. This is the unique value proposition of ToonTalk and the primary feature for blog/vlog demonstrations.
+
+A complete robot training demo should show:
+1. Setting up initial widgets (numbers, boxes)
+2. Clicking robot to enter training mode (yellow glow)
+3. Performing actions the robot should learn
+4. Clicking robot to stop training
+5. Providing new input data
+6. Watching the robot replay the trained actions
 
 ---
 
-## Current Implementation Status (as of November 2025)
+## Current Implementation Status (as of February 2026)
 
 ### ✅ Completed Features
 
@@ -44,9 +56,19 @@ This document outlines the implementation plan for tt-rs, tracking both current 
 | Feature | Status | What's Missing |
 |---------|--------|----------------|
 | Bird/Nest Messaging | ✅ Complete | Hatching, pairing, message delivery all working |
-| Robot Execution | 🚧 Partial | Pattern matching, bindings, watched execution |
+| **Robot Execution** | 🚧 **MVP Priority** | Pattern matching, bindings, watched execution |
 | Scales in Boxes | 🚧 Partial | Scales work standalone, not yet in box holes |
 | Erasure Levels | 🚧 Partial | Vacuum removes but doesn't create erased patterns |
+
+#### Robot Execution - Next Steps (MVP Critical)
+
+The robot currently records and replays basic actions. To be blog/vlog-ready:
+
+1. **Pattern Matching** - Robot should match input widgets against its trained conditions
+2. **Bindings** - Extract values from matched widgets to use in actions
+3. **Watched Execution** - Visual highlighting of current action during replay
+4. **Multi-Step Programs** - Support for robots with multiple sequential actions
+5. **Tutorial** - Step-by-step "Teach Your First Robot" guide
 
 ### ❌ Not Yet Started
 
@@ -533,9 +555,23 @@ These features restore the full experience of the original 1995 ToonTalk:
 
 ## Success Criteria
 
+### MVP (Blog/Vlog Demonstrable)
+
+**Primary Goal**: A working robot training demo that can be shown in a blog post or video.
+
+- [x] All basic widgets: Number, Box, Text, Robot, Bird, Nest, Scales
+- [x] Tools: Wand, Vacuum
+- [ ] **Robot training and execution** - The core demo:
+  - [x] Training mode (record user actions)
+  - [ ] Pattern matching against trained conditions
+  - [ ] Action replay on new inputs
+  - [ ] Watched execution with visual feedback
+- [ ] Tutorial: "Teach Your First Robot" step-by-step guide
+- [ ] Save/load workspaces (for sharing demos)
+
 ### MVP (ToonTalk Reborn Parity)
-- [ ] All basic widgets: Number, Box, Text, Robot, Bird, Nest, Scales
-- [ ] Tools: Wand, Vacuum
+- [x] All basic widgets: Number, Box, Text, Robot, Bird, Nest, Scales
+- [x] Tools: Wand, Vacuum
 - [ ] Robot training and execution with pattern matching
 - [ ] Save/load workspaces
 - [ ] 5+ example programs demonstrating capabilities

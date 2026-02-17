@@ -486,7 +486,7 @@ When contributing:
 This project is a derived work:
 - Original ToonTalk: Copyright (c) 1992-2009, Ken Kahn
 - ToonTalk Reborn (JavaScript): Copyright (c) 2014-2017, Ken Kahn
-- tt-rs: Copyright (c) 2025, Michael A Wright
+- tt-rs: Copyright (c) 2025-2026, Michael A Wright
 
 ### Third-Party Dependencies
 

@@ -2,7 +2,7 @@ BSD 3-Clause License
 
 Copyright (c) 1992-2009, Ken Kahn (Original ToonTalk - C++)
 Copyright (c) 2014-2017, Ken Kahn (ToonTalk Reborn - JavaScript)
-Copyright (c) 2025, Michael A Wright (tt-rs - Rust/WebAssembly)
+Copyright (c) 2025-2026, Michael A Wright (tt-rs - Rust/WebAssembly)
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

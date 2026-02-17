@@ -21,7 +21,7 @@ pub fn footer() -> Html {
 
     html! {
         <footer class="app-footer">
-            <span>{"Copyright (c) 2025 Michael A Wright"}</span>
+            <span>{"Copyright (c) 2025-2026 Michael A Wright"}</span>
             <span>{" | "}</span>
             <a href={LICENSE_URL}>{"BSD License"}</a>
             <span>{" | "}</span>

@@ -8,7 +8,7 @@ tt-rs ("Cartoon-oriented Talking Programming Application") is a Rust/WebAssembly
 
 This is a derived work based on ToonTalk by Ken Kahn. See COPYRIGHT and LICENSE files.
 
-### Current Implementation Status (November 2025)
+### Current Implementation Status (February 2026)
 
 **Working Features:**
 - Number widget (rational arithmetic with +, -, *, / operators)
@@ -56,6 +56,7 @@ See [plan.md](documentation/plan.md) for detailed roadmap.
 ./scripts/pre-commit-checks.sh      # Run all checks before committing
 ./scripts/check-live-demo.sh        # Verify live demo is up to date
 ./scripts/check-changelog.sh        # Verify CHANGELOG completeness
+./scripts/check-zindex.sh           # Verify CSS z-index conventions
 ./scripts/update-readme-screenshots.sh  # Update screenshot timestamps
 
 # Claude slash commands
@@ -179,12 +180,12 @@ All visual programming objects implement the `Widget` trait (`components/core/cr
 
 ```rust
 pub trait Widget: std::fmt::Debug {
-    fn type_name(&self) -> &'static str;  // "number", "box", "text"
-    fn id(&self) -> WidgetId;             // Unique identifier
-    fn copy(&self) -> Box<dyn Widget>;    // Deep copy with new ID
-    fn matches(&self, other: &dyn Widget) -> MatchResult;  // Pattern matching
-    fn render(&self) -> Html;             // Yew component rendering
-    fn description(&self) -> String;      // Human-readable text
+    fn type_name(&self) -> &'static str;                    // "number", "box", "text"
+    fn id(&self) -> WidgetId;                               // Unique identifier
+    fn copy(&self) -> Box<dyn Widget>;                      // Deep copy with new ID
+    fn matches(&self, other: &dyn Widget) -> MatchResult;   // Pattern matching (Match/NoMatch)
+    fn render(&self) -> Html;                               // Yew component rendering
+    fn description(&self) -> String;                        // Human-readable text
 }
 ```
 
@@ -296,30 +297,7 @@ Key concepts:
 
 ## CHANGELOG Workflow
 
-**CRITICAL: Avoid the SHA Loop**
-
-When updating CHANGELOG.md, NEVER try to include the current commit's SHA - this creates an infinite loop.
-
-**Workflow:**
-
-1. Use `<latest>` as placeholder for current commit SHA
-2. Replace previous `<latest>` with actual SHA when making the NEXT commit
-3. Only ONE `<latest>` should exist at a time
-
-**Example:**
-```markdown
-## 2025-11-29
-
-- feat: New feature (`<latest>`)           # Current commit - placeholder
-- docs: Previous change (`e41f2bf`)        # Previous commit - actual SHA
-```
-
-**Rules:**
-- NEVER amend commits just to update CHANGELOG SHAs
-- NEVER try to include current commit SHA in CHANGELOG
-- Replace `<latest>` only when making subsequent commits
-
-See [learnings.md](documentation/learnings.md#changelog-workflow-avoiding-commit-sha-loops) for detailed explanation.
+Use `<latest>` as placeholder for current commit SHA. Replace it with the actual SHA when making the NEXT commit. See [learnings.md](documentation/learnings.md#changelog-workflow-avoiding-commit-sha-loops) for detailed workflow.
 
 ## Documentation
 
