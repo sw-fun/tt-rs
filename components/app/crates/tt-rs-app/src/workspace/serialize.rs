@@ -6,6 +6,7 @@ use tt_rs_bird::Bird;
 use tt_rs_core::WidgetId;
 use tt_rs_drag::Position;
 use tt_rs_dropzone::DropZone;
+use tt_rs_magnifier::Magnifier;
 use tt_rs_nest::Nest;
 use tt_rs_number::{ArithOperator, Number};
 use tt_rs_robot::Robot;
@@ -414,6 +415,10 @@ fn data_to_widget(data: &WidgetData) -> Option<(WidgetItem, Position)> {
             // ShowMe buttons are UI elements in the notes pane, not standalone widgets
             None
         }
+        WidgetData::Magnifier(m) => Some((
+            WidgetItem::Magnifier(Magnifier::new()),
+            Position::new(m.position.x, m.position.y),
+        )),
     }
 }
 

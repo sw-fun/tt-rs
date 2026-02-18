@@ -40,10 +40,15 @@
       "name": "results-nest",
       "position": { "x": 350, "y": 120 },
       "is_copy_source": false
+    },
+    {
+      "type": "magnifier",
+      "name": "inspector",
+      "position": { "x": 50, "y": 450 }
     }
   ],
   "boxes": [],
-  "notes": "Tutorial: Robot with Sensors & Bird/Nest\n\nSENSORS produce values when clicked:\n- Die sensor: random (0-999999)\n- Clock sensor: time in milliseconds\n\nTHE CHALLENGE:\nBig numbers are hard to use!\nWe need MODULO to get small ones.\n\nWATCH THE DEMO (click 'Show Me'):\n\n1. START TRAINING:\n   Click robot (yellow glow)\n\n2. CLICK SENSOR:\n   Click the die to get a random number\n\n3. APPLY MODULO:\n   Drag %10 onto the number\n   Result: last digit (0-9)!\n\n4. SEND VIA BIRD:\n   Drag result onto the bird\n   Bird delivers to the nest!\n\n5. STOP TRAINING:\n   Click robot to finish\n\nTRY IT YOURSELF:\nClick robot to run it again!\nEach run produces a new random digit.\n\nCOLLECTING RESULTS:\nClick the nest to take the top item.\n(Oldest items come out first - FIFO)\n\nMODULO MATH:\n123456 % 10 = 6 (last digit)\n123456 % 100 = 56 (last 2 digits)",
+  "notes": "Tutorial: Robot with Sensors & Bird/Nest\n\nSENSORS produce values when clicked:\n- Die sensor: random (0-999999)\n- Clock sensor: time in milliseconds\n\nTHE CHALLENGE:\nBig numbers are hard to use!\nWe need MODULO to get small ones.\n\nWATCH THE DEMO (click 'Show Me'):\n\n1. START TRAINING:\n   Click robot (yellow glow)\n\n2. CLICK SENSOR:\n   Click the die to get a random number\n\n3. APPLY MODULO:\n   Drag %10 onto the number\n   Result: last digit (0-9)!\n\n4. SEND VIA BIRD:\n   Drag result onto the bird\n   Bird delivers to the nest!\n\n5. STOP TRAINING:\n   Click robot to finish\n\nTRY IT YOURSELF:\nClick robot to run it again!\nEach run produces a new random digit.\n\nINSPECT WITH MAGNIFIER:\nDrag the magnifier onto:\n- Robot: see training steps\n- Nest: see queued messages\n\nCOLLECTING RESULTS:\nClick the nest to take the top item.\n(Oldest items come out first - FIFO)\n\nMODULO MATH:\n123456 % 10 = 6 (last digit)\n123456 % 100 = 56 (last 2 digits)",
   "notes_position": { "x": 480, "y": 60 },
   "notes_size": [380, 480],
   "demo_steps": [

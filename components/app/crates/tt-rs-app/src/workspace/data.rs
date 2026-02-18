@@ -90,6 +90,9 @@ pub enum WidgetData {
     /// ShowMe button for tutorials.
     #[serde(rename = "showme")]
     ShowMe(ShowMeButtonData),
+    /// Magnifier tool for inspecting widgets.
+    #[serde(rename = "magnifier")]
+    Magnifier(MagnifierData),
 }
 
 /// Box pattern data (for use in expected patterns).
@@ -192,6 +195,16 @@ pub struct VacuumData {
 /// Wand tool data.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WandData {
+    /// Position in workspace.
+    pub position: PositionData,
+}
+
+/// Magnifier tool data.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MagnifierData {
+    /// Unique name for semantic targeting in demos.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Position in workspace.
     pub position: PositionData,
 }
