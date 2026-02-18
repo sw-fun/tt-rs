@@ -40,6 +40,7 @@ impl Widget for Robot {
         };
 
         let action_count = self.actions.len();
+        let action_descriptions: Vec<String> = self.action_descriptions();
 
         html! {
             <div class={format!("widget robot {}", state_class)} data-widget-id={self.id.to_string()}>
@@ -47,7 +48,15 @@ impl Widget for Robot {
                 <div class="robot-info">
                     <span class="robot-status">{ state_indicator }</span>
                     if action_count > 0 {
-                        <span class="robot-actions">{ format!("({} actions)", action_count) }</span>
+                        <div class="robot-actions-container">
+                            <span class="robot-actions">{ format!("({} actions)", action_count) }</span>
+                            <div class="robot-training-popup">
+                                <div class="popup-title">{"Training:"}</div>
+                                { for action_descriptions.iter().enumerate().map(|(i, desc)| {
+                                    html! { <div class="popup-step">{ format!("{}. {}", i + 1, desc) }</div> }
+                                })}
+                            </div>
+                        </div>
                     }
                 </div>
             </div>

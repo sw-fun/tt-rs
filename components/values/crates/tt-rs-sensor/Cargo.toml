@@ -1,0 +1,13 @@
+[package]
+name = "tt-rs-sensor"
+description = "Sensor widget for tt-rs - time and random number generation"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+tt-rs-core = { path = "../../../core/crates/tt-rs-core" }
+tt-rs-number = { path = "../tt-rs-number" }
+yew = { workspace = true }
+js-sys = "0.3"

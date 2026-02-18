@@ -11,13 +11,20 @@ use crate::widget_item::WidgetItem;
 pub fn execute_robot(state: &mut AppState, robot_id: WidgetId) {
     let actions = get_actions(state, robot_id);
     if actions.is_empty() {
+        state.status_message = Some("Robot has no training - click to train first".to_string());
         return;
     }
 
+    // Clear any previous status message
+    state.status_message = None;
     state.executing_robot_id = Some(robot_id);
     set_working(state, robot_id, true);
     for action in &actions {
         execute_action(state, robot_id, action);
+        // Stop on first error
+        if state.status_message.is_some() {
+            break;
+        }
     }
     set_working(state, robot_id, false);
     state.executing_robot_id = None;
@@ -56,5 +63,6 @@ fn execute_action(state: &mut AppState, robot_id: WidgetId, action: &Action) {
         Action::Copy { path } => actions::execute_copy(state, path),
         Action::Remove { path } => actions::execute_remove(state, path),
         Action::PickUp { path } => actions::execute_pickup(state, robot_id, path),
+        Action::ClickSensor { path } => actions::execute_click_sensor(state, path),
     }
 }

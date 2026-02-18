@@ -25,7 +25,8 @@ pub enum PendingAction {
 }
 
 /// Load puzzle/tutorial based on route.
-fn load_route(route: &Route) -> Option<AppState> {
+/// Returns (AppState, UserLevel) if found.
+fn load_route(route: &Route) -> Option<(AppState, UserLevel)> {
     match route {
         Route::Puzzle(id) => {
             // Try multiple variations of the puzzle ID
@@ -39,7 +40,8 @@ fn load_route(route: &Route) -> Option<AppState> {
             for puzzle_id in &variations {
                 if let Some(workspace) = crate::workspace::load_bundled_puzzle(puzzle_id) {
                     log::info!("Loaded puzzle from URL: {}", puzzle_id);
-                    return Some(crate::workspace::from_workspace(&workspace));
+                    let level = crate::workspace::workspace_user_level(&workspace);
+                    return Some((crate::workspace::from_workspace(&workspace), level));
                 }
             }
 
@@ -57,7 +59,8 @@ fn load_route(route: &Route) -> Option<AppState> {
             for tutorial_id in &variations {
                 if let Some(workspace) = crate::workspace::load_bundled_puzzle(tutorial_id) {
                     log::info!("Loaded tutorial from URL: {}", tutorial_id);
-                    return Some(crate::workspace::from_workspace(&workspace));
+                    let level = crate::workspace::workspace_user_level(&workspace);
+                    return Some((crate::workspace::from_workspace(&workspace), level));
                 }
             }
 
@@ -71,14 +74,17 @@ fn load_route(route: &Route) -> Option<AppState> {
 /// Main application component.
 #[function_component(App)]
 pub fn app() -> Html {
-    let state = use_state(|| {
-        // Check URL on initial load
+    // Load initial state and user level together from URL
+    let (initial_state, initial_level) = {
         let route = current_route();
-        load_route(&route).unwrap_or_default()
-    });
+        load_route(&route).unwrap_or_else(|| (AppState::default(), UserLevel::default()))
+    };
+
+    let state = use_state(|| initial_state);
     let help_open = use_state(|| false);
     let workspace_open = use_state(|| false);
-    let user_level = use_state(UserLevel::default);
+    let tutorial_open = use_state(|| false);
+    let user_level = use_state(|| initial_level);
     let dragged_box_id = use_mut_ref(|| None::<WidgetId>);
     let pending_new_box = use_mut_ref(|| None::<usize>);
 
@@ -145,7 +151,40 @@ pub fn app() -> Html {
                                             widget_id,
                                             is_box
                                         );
-                                        new_demo_state.dragged_widget_id = Some(widget_id);
+
+                                        // If widget is a copy source, create a copy first
+                                        let mut new_app_state = (*app_state_for_timeout).clone();
+                                        let drag_id = if let Some(widget) =
+                                            new_app_state.widgets.get(&widget_id)
+                                        {
+                                            if widget.is_copy_source() {
+                                                // Create a copy of the widget
+                                                let copy = crate::demo_ops::copy_widget(
+                                                    widget, &widget_id,
+                                                );
+                                                let copy_id = copy.id();
+                                                let pos = new_app_state
+                                                    .positions
+                                                    .get(&widget_id)
+                                                    .copied()
+                                                    .unwrap_or_default();
+                                                new_app_state.positions.insert(copy_id, pos);
+                                                new_app_state.widgets.insert(copy_id, copy);
+                                                app_state_for_timeout.set(new_app_state);
+                                                log::info!(
+                                                    "Demo DragStart: created copy {:?} from copy source {:?}",
+                                                    copy_id,
+                                                    widget_id
+                                                );
+                                                copy_id
+                                            } else {
+                                                widget_id
+                                            }
+                                        } else {
+                                            widget_id
+                                        };
+
+                                        new_demo_state.dragged_widget_id = Some(drag_id);
                                         new_demo_state.dragged_is_box = is_box;
                                     }
                                 }
@@ -197,6 +236,28 @@ pub fn app() -> Html {
                                     // Should be resolved before playback - skip
                                     log::warn!("MoveToTarget not resolved - skipping");
                                 }
+                                crate::workspace::DemoStep::MoveRelative { .. } => {
+                                    // If dragging a widget, update its position based on cursor
+                                    if new_demo_state.is_dragging {
+                                        if let Some(widget_id) = new_demo_state.dragged_widget_id {
+                                            let mut new_app_state =
+                                                (*app_state_for_timeout).clone();
+                                            // Use the updated cursor position from demo_runner
+                                            let x = new_demo_state.cursor_x;
+                                            let y = new_demo_state.cursor_y
+                                                - crate::demo_runner::WORKSPACE_OFFSET_Y;
+                                            let pos = tt_rs_drag::Position::new(x, y);
+                                            new_app_state.positions.insert(widget_id, pos);
+                                            app_state_for_timeout.set(new_app_state);
+                                            log::info!(
+                                                "Demo MoveRelative: moved widget {:?} to ({}, {})",
+                                                widget_id,
+                                                x,
+                                                y
+                                            );
+                                        }
+                                    }
+                                }
                                 crate::workspace::DemoStep::Click => {
                                     // Perform click operation at cursor position
                                     let cursor_x = ds_for_timeout.cursor_x;
@@ -247,12 +308,14 @@ pub fn app() -> Html {
     {
         let state = state.clone();
         let dirty = dirty.clone();
+        let user_level = user_level.clone();
         use_effect_with((), move |_| {
             let window = web_sys::window().unwrap();
             let cb = Closure::wrap(Box::new(move || {
                 let route = current_route();
-                if let Some(new_state) = load_route(&route) {
+                if let Some((new_state, new_level)) = load_route(&route) {
                     state.set(new_state);
+                    user_level.set(new_level);
                     dirty.set(false); // Fresh load is not dirty
                 }
             }) as Box<dyn FnMut()>);
@@ -298,6 +361,7 @@ pub fn app() -> Html {
     let cbs = callbacks::create_callbacks(callbacks::CallbackConfig {
         state: state.clone(),
         help_open: help_open.clone(),
+        tutorial_open: tutorial_open.clone(),
         user_level: user_level.clone(),
         workspace_open: workspace_open.clone(),
         dragged_box_id: dragged_box_id.clone(),
@@ -399,7 +463,7 @@ pub fn app() -> Html {
 
     html! {
         <TooltipLayerProvider>
-            { render::render_app(&state, *help_open, *workspace_open, *user_level, &cbs, &planes, &workspaces) }
+            { render::render_app(&state, *help_open, *tutorial_open, *workspace_open, *user_level, &cbs, &planes, &workspaces) }
             if let Some(message) = dialog_message {
                 <ConfirmDialog
                     title="Discard Changes?"
@@ -442,8 +506,15 @@ pub struct ZPlanes<'a> {
 fn partition_into_planes(state: &AppState, level: UserLevel) -> ZPlanes<'_> {
     let is_visible = |w: &WidgetItem| -> bool {
         match level {
-            UserLevel::Tt1 => !matches!(w, WidgetItem::Bird(_) | WidgetItem::Nest(_)),
-            UserLevel::Tt2 => true,
+            UserLevel::Tt1 => !matches!(
+                w,
+                WidgetItem::Bird(_)
+                    | WidgetItem::Nest(_)
+                    | WidgetItem::Sensor(_)
+                    | WidgetItem::Magnifier(_)
+            ),
+            UserLevel::Tt2 => !matches!(w, WidgetItem::Sensor(_) | WidgetItem::Magnifier(_)),
+            UserLevel::Tt3 => true,
         }
     };
 
@@ -501,7 +572,13 @@ fn partition_into_planes(state: &AppState, level: UserLevel) -> ZPlanes<'_> {
             not_in_box(id)
                 && is_visible(w)
                 && !w.is_copy_source()
-                && matches!(w, WidgetItem::Vacuum(_) | WidgetItem::Wand(_))
+                && matches!(
+                    w,
+                    WidgetItem::Vacuum(_)
+                        | WidgetItem::Wand(_)
+                        | WidgetItem::Magnifier(_)
+                        | WidgetItem::Sensor(_)
+                )
         })
         .collect();
 

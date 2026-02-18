@@ -7,8 +7,9 @@ use yew::prelude::*;
 
 use crate::ops::{
     handle_bird_drop, handle_box_hole_drop, handle_drop_on_bird, handle_dropzone_drop,
-    handle_nest_click, handle_nest_drop, handle_number_on_number, handle_robot_click,
-    handle_scales_drop, handle_vacuum_drop, handle_wand_drop,
+    handle_magnifier_drop, handle_nest_click, handle_nest_drop, handle_number_on_number,
+    handle_robot_click, handle_scales_drop, handle_sensor_click, handle_vacuum_drop,
+    handle_wand_drop,
 };
 use crate::state::AppState;
 use crate::widget_item::WidgetItem;
@@ -75,6 +76,12 @@ pub fn create_copy_source(
                 s.widgets.insert(copy.id(), WidgetItem::Wand(copy));
                 made_change = true;
             }
+            Some(WidgetItem::Magnifier(m)) => {
+                let copy = m.copy_magnifier();
+                s.positions.insert(copy.id(), e.position);
+                s.widgets.insert(copy.id(), WidgetItem::Magnifier(copy));
+                made_change = true;
+            }
             Some(WidgetItem::Robot(r)) => {
                 let copy = r.copy_robot();
                 s.positions.insert(copy.id(), e.position);
@@ -85,6 +92,12 @@ pub fn create_copy_source(
                 let copy = t.copy_text();
                 s.positions.insert(copy.id(), e.position);
                 s.widgets.insert(copy.id(), WidgetItem::Text(copy));
+                made_change = true;
+            }
+            Some(WidgetItem::Sensor(se)) => {
+                let copy = se.copy_sensor();
+                s.positions.insert(copy.id(), e.position);
+                s.widgets.insert(copy.id(), WidgetItem::Sensor(copy));
                 made_change = true;
             }
             Some(WidgetItem::DropZone(_)) => {
@@ -122,9 +135,11 @@ pub fn create_widget_drop(
 
         // These operations modify content, so they make the workspace dirty
         if handle_robot_click(&mut s, id, &e)
+            || handle_sensor_click(&mut s, id, &e)  // Click on sensor to produce number
             || handle_nest_click(&mut s, id, &e)  // Click on nest to take message
             || handle_vacuum_drop(&mut s, id, mx, my, &e)
             || handle_wand_drop(&mut s, id, mx, my, &e)
+            || handle_magnifier_drop(&mut s, id, mx, my, &e)  // Inspect widget with magnifier
             || handle_drop_on_bird(&mut s, id, mx, my)  // Drop widget ON bird for delivery
             || handle_bird_drop(&mut s, id, mx, my)
             || handle_nest_drop(&mut s, id, mx, my)

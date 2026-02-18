@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Magnifying Glass - ToonTalk style matching tt-magnifier.jpg -->
+
+  <defs>
+    <!-- Glass lens gradient -->
+    <radialGradient id="lens-glow" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#E8F4F8"/>
+      <stop offset="50%" stop-color="#C5E3EC"/>
+      <stop offset="100%" stop-color="#A8D4E6"/>
+    </radialGradient>
+    <!-- Metal rim gradient -->
+    <linearGradient id="rim-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C0C0C0"/>
+      <stop offset="50%" stop-color="#A0A0A0"/>
+      <stop offset="100%" stop-color="#808080"/>
+    </linearGradient>
+    <!-- Handle gradient -->
+    <linearGradient id="handle-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2D2D2D"/>
+      <stop offset="50%" stop-color="#4A4A4A"/>
+      <stop offset="100%" stop-color="#2D2D2D"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Handle (black, angled to bottom-left) -->
+  <rect x="55" y="55" width="38" height="14" rx="5"
+        fill="url(#handle-gradient)" stroke="#1A1A1A" stroke-width="2"
+        transform="rotate(45 55 55)"/>
+
+  <!-- Metal collar connecting handle to rim -->
+  <rect x="50" y="50" width="10" height="16" rx="2"
+        fill="#A0A0A0" stroke="#707070" stroke-width="1"
+        transform="rotate(45 55 55)"/>
+
+  <!-- Lens frame (outer rim - silver/gray) -->
+  <circle cx="35" cy="35" r="30" fill="none" stroke="#606060" stroke-width="5"/>
+  <circle cx="35" cy="35" r="30" fill="none" stroke="url(#rim-gradient)" stroke-width="3"/>
+
+  <!-- Inner dark ring -->
+  <circle cx="35" cy="35" r="26" fill="none" stroke="#505050" stroke-width="1.5"/>
+
+  <!-- Lens glass -->
+  <circle cx="35" cy="35" r="25" fill="url(#lens-glow)"/>
+
+  <!-- Main highlight (large oval reflection) -->
+  <ellipse cx="28" cy="26" rx="10" ry="6" fill="#FFFFFF" opacity="0.7"
+           transform="rotate(-20 28 26)"/>
+
+  <!-- Secondary smaller reflection -->
+  <ellipse cx="40" cy="38" rx="6" ry="3" fill="#FFFFFF" opacity="0.4"
+           transform="rotate(-20 40 38)"/>
+
+  <!-- Small sparkle highlights -->
+  <circle cx="22" cy="22" r="4" fill="#FFFFFF" opacity="0.85"/>
+  <circle cx="28" cy="30" r="2" fill="#FFFFFF" opacity="0.6"/>
+</svg>

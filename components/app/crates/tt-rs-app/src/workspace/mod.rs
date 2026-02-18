@@ -13,4 +13,4 @@ pub use data::{
     RobotData, ScalesData, TextData, WidgetData, Workspace, WorkspaceMetadata,
 };
 pub use puzzles::load_bundled_puzzle;
-pub use serialize::{from_workspace, to_workspace};
+pub use serialize::{from_workspace, to_workspace, workspace_user_level};

@@ -40,11 +40,25 @@ MESSAGE PASSING: Use birds to send data between different parts of your program 
 
 All Basic Mode features (numbers, boxes, scales, robot, tools) are also available."#;
 
+/// Default workspace notes for tt3 (Sensors) mode.
+pub const TT3_DEFAULT_NOTES: &str = r#"Welcome to tt-rs Sensors Mode!
+
+This level introduces Sensors for generating time and random values.
+
+TIME SENSOR (Clock): Click to produce the current time as a number (epoch milliseconds). Useful for timestamps or measuring durations.
+
+RANDOM SENSOR (Die): Click to produce a random number (0-999,999). Useful for games, simulations, or random choices.
+
+USING WITH ROBOTS: Train robots to click sensors and process the numbers - create programs that react to time or make random decisions.
+
+All previous features (numbers, boxes, scales, robot, tools, birds, nests) are also available."#;
+
 /// Get default notes content for a user level.
 pub fn default_notes_for_level(level: UserLevel) -> &'static str {
     match level {
         UserLevel::Tt1 => TT1_DEFAULT_NOTES,
         UserLevel::Tt2 => TT2_DEFAULT_NOTES,
+        UserLevel::Tt3 => TT3_DEFAULT_NOTES,
     }
 }
 
@@ -74,6 +88,10 @@ pub struct AppState {
     pub dropzone_roles: HashMap<String, WidgetId>,
     /// ID of robot currently executing (for held widget tracking).
     pub executing_robot_id: Option<WidgetId>,
+    /// Status message to display (e.g., robot execution errors).
+    pub status_message: Option<String>,
+    /// Inspection modal content (set by magnifier tool).
+    pub inspection_modal: Option<String>,
 }
 
 impl AppState {
@@ -101,6 +119,8 @@ impl AppState {
             box_names: HashMap::new(),
             dropzone_roles: HashMap::new(),
             executing_robot_id: None,
+            status_message: None,
+            inspection_modal: None,
         }
     }
 

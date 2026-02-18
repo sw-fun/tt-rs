@@ -4,7 +4,9 @@ All notable changes to tt-rs.
 
 ## 2026-02-17
 
-- feat: Add robot training tutorial with Show Me demo animation (`<latest>`)
+- Add Sensor widget (time/random), Magnifier inspector tool, Modulo operator, Robot-sensor tutorial (`<latest>`)
+- deploy: Update live demo with robot training tutorial (`12c045a`)
+- feat: Add robot training tutorial (`7151c19`)
 - deploy: Update live demo with Robot Held Widget State feature (`c66e8e2`)
 - feat: Implement Phase 0.1 Robot Held Widget State (`12ae227`)
 - deploy: Update live demo with robot MVP documentation (`0af1884`)

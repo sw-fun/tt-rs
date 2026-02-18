@@ -108,6 +108,32 @@ fn test_apply_division_by_zero_returns_none() {
 }
 
 #[test]
+fn test_apply_modulo() {
+    let mut target = Number::new(17);
+    let dropped = Number::new(10).with_operator(ArithOperator::Modulo);
+    target.apply(&dropped);
+    assert_eq!(target.numerator(), 7); // 17 % 10 = 7
+}
+
+#[test]
+fn test_apply_modulo_large_number() {
+    // Simulate sensor output: 123456 % 10 = 6
+    let mut target = Number::new(123456);
+    let dropped = Number::new(10).with_operator(ArithOperator::Modulo);
+    target.apply(&dropped);
+    assert_eq!(target.numerator(), 6);
+}
+
+#[test]
+fn test_apply_modulo_by_zero_returns_none() {
+    let mut target = Number::new(10);
+    let dropped = Number::new(0).with_operator(ArithOperator::Modulo);
+    assert!(target.apply(&dropped).is_none());
+    // Target should remain unchanged
+    assert_eq!(target.numerator(), 10);
+}
+
+#[test]
 fn test_subtract_from_negative() {
     // Scenario: drop -1 tool on -1 value, should get -2
     let mut target = Number::new(-1);

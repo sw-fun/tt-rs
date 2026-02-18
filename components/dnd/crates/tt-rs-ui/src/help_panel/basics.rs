@@ -35,6 +35,12 @@ fn level_specific_intro(level: UserLevel) -> Html {
                  with birds and nests!"}
             </p>
         },
+        UserLevel::Tt3 => html! {
+            <p>
+                {"You're in "}<strong>{"tt3"}</strong>{" mode - use sensors for \
+                 time and random values!"}
+            </p>
+        },
     }
 }
 

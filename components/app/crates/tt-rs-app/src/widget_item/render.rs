@@ -12,8 +12,10 @@ pub fn render(item: &WidgetItem) -> Html {
         WidgetItem::Number(n) => n.render(),
         WidgetItem::Text(t) => t.render(),
         WidgetItem::Scales(s) => s.render(),
+        WidgetItem::Sensor(s) => s.render(),
         WidgetItem::Vacuum(v) => v.render(),
         WidgetItem::Wand(w) => w.render(),
+        WidgetItem::Magnifier(m) => m.render(),
         WidgetItem::Robot(r) => r.render(),
         WidgetItem::Nest(nest) => nest.render(),
         WidgetItem::Bird(bird) => bird.render(),
@@ -27,8 +29,12 @@ pub fn render_small(widget: &WidgetItem) -> Html {
         WidgetItem::Number(n) => render_number_small(n),
         WidgetItem::Text(t) => render_text_small(t),
         WidgetItem::Scales(s) => render_scales_small(s),
+        WidgetItem::Sensor(_) => html! { <div class="widget sensor in-hole">{"[sensor]"}</div> },
         WidgetItem::Vacuum(_) => html! { <div class="widget vacuum in-hole">{"[vacuum]"}</div> },
         WidgetItem::Wand(_) => html! { <div class="widget wand in-hole">{"[wand]"}</div> },
+        WidgetItem::Magnifier(_) => {
+            html! { <div class="widget magnifier in-hole">{"[magnifier]"}</div> }
+        }
         WidgetItem::Robot(_) => html! { <div class="widget robot in-hole">{"[robot]"}</div> },
         WidgetItem::Nest(_) => html! { <div class="widget nest in-hole">{"[nest]"}</div> },
         WidgetItem::Bird(_) => html! { <div class="widget bird in-hole">{"[bird]"}</div> },

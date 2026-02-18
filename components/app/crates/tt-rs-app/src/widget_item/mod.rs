@@ -6,10 +6,12 @@ mod tooltip;
 use tt_rs_bird::Bird;
 use tt_rs_core::{Widget, WidgetId};
 use tt_rs_dropzone::DropZone;
+use tt_rs_magnifier::Magnifier;
 use tt_rs_nest::Nest;
 use tt_rs_number::Number;
 use tt_rs_robot::Robot;
 use tt_rs_scales::Scales;
+use tt_rs_sensor::Sensor;
 use tt_rs_text::Text;
 use tt_rs_vacuum::Vacuum;
 use tt_rs_wand::Wand;
@@ -25,8 +27,10 @@ pub enum WidgetItem {
     Number(Number),
     Text(Text),
     Scales(Scales),
+    Sensor(Sensor),
     Vacuum(Vacuum),
     Wand(Wand),
+    Magnifier(Magnifier),
     Robot(Robot),
     Nest(Nest),
     Bird(Bird),
@@ -39,8 +43,10 @@ impl WidgetItem {
             WidgetItem::Number(n) => n.id(),
             WidgetItem::Text(t) => t.id(),
             WidgetItem::Scales(s) => s.id(),
+            WidgetItem::Sensor(s) => s.id(),
             WidgetItem::Vacuum(v) => v.id(),
             WidgetItem::Wand(w) => w.id(),
+            WidgetItem::Magnifier(m) => m.id(),
             WidgetItem::Robot(r) => r.id(),
             WidgetItem::Nest(nest) => nest.id(),
             WidgetItem::Bird(bird) => bird.id(),
@@ -58,11 +64,17 @@ impl WidgetItem {
     pub fn is_wand(&self) -> bool {
         matches!(self, WidgetItem::Wand(_))
     }
+    pub fn is_magnifier(&self) -> bool {
+        matches!(self, WidgetItem::Magnifier(_))
+    }
     pub fn is_robot(&self) -> bool {
         matches!(self, WidgetItem::Robot(_))
     }
     pub fn is_dropzone(&self) -> bool {
         matches!(self, WidgetItem::DropZone(_))
+    }
+    pub fn is_sensor(&self) -> bool {
+        matches!(self, WidgetItem::Sensor(_))
     }
 
     pub fn tooltip_info(&self) -> &'static TooltipInfo {
@@ -83,8 +95,10 @@ impl WidgetItem {
             WidgetItem::Number(_) => "number",
             WidgetItem::Text(_) => "text",
             WidgetItem::Scales(_) => "scales",
+            WidgetItem::Sensor(_) => "sensor",
             WidgetItem::Vacuum(_) => "vacuum",
             WidgetItem::Wand(_) => "wand",
+            WidgetItem::Magnifier(_) => "magnifier",
             WidgetItem::Robot(_) => "robot",
             WidgetItem::Nest(_) => "nest",
             WidgetItem::Bird(_) => "bird",
@@ -98,6 +112,7 @@ impl WidgetItem {
     pub fn is_copy_source(&self) -> bool {
         match self {
             WidgetItem::Number(n) => n.is_copy_source(),
+            WidgetItem::Sensor(s) => s.is_copy_source(),
             WidgetItem::Nest(nest) => nest.is_copy_source(),
             WidgetItem::Bird(bird) => bird.is_copy_source(),
             // These widget types don't track copy source status
@@ -105,6 +120,7 @@ impl WidgetItem {
             | WidgetItem::Scales(_)
             | WidgetItem::Vacuum(_)
             | WidgetItem::Wand(_)
+            | WidgetItem::Magnifier(_)
             | WidgetItem::Robot(_)
             | WidgetItem::DropZone(_) => false,
         }
@@ -116,8 +132,10 @@ impl WidgetItem {
             WidgetItem::Number(n) => WidgetItem::Number(n.copy_number()),
             WidgetItem::Text(t) => WidgetItem::Text(t.copy_text()),
             WidgetItem::Scales(s) => WidgetItem::Scales(s.copy_scales()),
+            WidgetItem::Sensor(s) => WidgetItem::Sensor(s.copy_sensor()),
             WidgetItem::Vacuum(v) => WidgetItem::Vacuum(v.copy_vacuum()),
             WidgetItem::Wand(w) => WidgetItem::Wand(w.copy_wand()),
+            WidgetItem::Magnifier(m) => WidgetItem::Magnifier(m.copy_magnifier()),
             WidgetItem::Robot(r) => WidgetItem::Robot(r.copy_robot()),
             WidgetItem::Nest(nest) => WidgetItem::Nest(nest.copy_nest()),
             WidgetItem::Bird(bird) => WidgetItem::Bird(bird.copy_bird()),
@@ -131,8 +149,10 @@ impl WidgetItem {
             WidgetItem::Number(n) => Box::new(n.clone()),
             WidgetItem::Text(t) => Box::new(t.clone()),
             WidgetItem::Scales(s) => Box::new(s.clone()),
+            WidgetItem::Sensor(s) => Box::new(s.clone()),
             WidgetItem::Vacuum(v) => Box::new(v.clone()),
             WidgetItem::Wand(w) => Box::new(w.clone()),
+            WidgetItem::Magnifier(m) => Box::new(m.clone()),
             WidgetItem::Robot(r) => Box::new(r.clone()),
             WidgetItem::Nest(nest) => Box::new(nest.clone()),
             WidgetItem::Bird(bird) => Box::new(bird.clone()),
@@ -187,6 +207,7 @@ impl WidgetItem {
             "scales" => WidgetItem::Scales(Scales::new()),
             "vacuum" => WidgetItem::Vacuum(Vacuum::new()),
             "wand" => WidgetItem::Wand(Wand::new()),
+            "magnifier" => WidgetItem::Magnifier(Magnifier::new()),
             "robot" => WidgetItem::Robot(Robot::new()),
             "nest" => WidgetItem::Nest(Nest::new()),
             "bird" => WidgetItem::Bird(Bird::new()),
@@ -197,6 +218,14 @@ impl WidgetItem {
                     .and_then(|s| s.strip_suffix('"'))
                     .unwrap_or("Drop here");
                 WidgetItem::DropZone(DropZone::new(label))
+            }
+            "sensor" => {
+                // Parse sensor from description like "sensor time" or "sensor random"
+                if desc.contains("random") {
+                    WidgetItem::Sensor(Sensor::new_random())
+                } else {
+                    WidgetItem::Sensor(Sensor::new_time())
+                }
             }
             _ => {
                 log::warn!("Unknown widget type: {}", widget.type_name());

@@ -8,6 +8,7 @@ pub enum ArithOperator {
     Subtract,
     Multiply,
     Divide,
+    Modulo,
 }
 
 impl ArithOperator {
@@ -18,6 +19,7 @@ impl ArithOperator {
             Self::Subtract => "-",
             Self::Multiply => "*",
             Self::Divide => "/",
+            Self::Modulo => "%",
         }
     }
 }
@@ -60,4 +62,18 @@ pub(crate) fn divide(n1: i64, d1: u64, n2: i64, d2: u64) -> Option<(i64, u64)> {
     let num = n2 * d1 as i64 * sign;
     let den = d2 * n1.unsigned_abs();
     Some(reduce(num, den))
+}
+
+/// Modulo operation: n2 % n1 (target % dropped)
+pub(crate) fn modulo(n1: i64, d1: u64, n2: i64, d2: u64) -> Option<(i64, u64)> {
+    if n1 == 0 {
+        return None; // Cannot mod by zero
+    }
+    // For integers (denominators are 1): n2 % n1
+    // For rationals: convert to common denominator, then mod numerators
+    let common_den = d1 * d2;
+    let num1 = n1 * d2 as i64;
+    let num2 = n2 * d1 as i64;
+    let result_num = num2 % num1;
+    Some(reduce(result_num, common_den))
 }

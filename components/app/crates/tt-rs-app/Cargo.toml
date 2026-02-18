@@ -12,6 +12,7 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 tt-rs-core = { path = "../../../core/crates/tt-rs-core" }
 tt-rs-number = { path = "../../../values/crates/tt-rs-number" }
+tt-rs-sensor = { path = "../../../values/crates/tt-rs-sensor" }
 tt-rs-text = { path = "../../../values/crates/tt-rs-text" }
 tt-rs-bird = { path = "../../../containers/crates/tt-rs-bird" }
 tt-rs-box = { path = "../../../containers/crates/tt-rs-box" }
@@ -20,6 +21,7 @@ tt-rs-dropzone = { path = "../../../containers/crates/tt-rs-dropzone" }
 tt-rs-scales = { path = "../../../comparison/crates/tt-rs-scales" }
 tt-rs-vacuum = { path = "../../../tools/crates/tt-rs-vacuum" }
 tt-rs-wand = { path = "../../../tools/crates/tt-rs-wand" }
+tt-rs-magnifier = { path = "../../../tools/crates/tt-rs-magnifier" }
 tt-rs-robot = { path = "../../../agents/crates/tt-rs-robot" }
 tt-rs-drag = { path = "../../../dnd/crates/tt-rs-drag" }
 tt-rs-ui = { path = "../../../dnd/crates/tt-rs-ui" }

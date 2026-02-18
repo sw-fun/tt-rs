@@ -90,5 +90,11 @@ fn apply_op(op: ArithOperator, dropped: &Number, target: &Number) -> Option<(i64
             target_num,
             target.denominator,
         ),
+        ArithOperator::Modulo => operator::modulo(
+            dropped_num,
+            dropped.denominator,
+            target_num,
+            target.denominator,
+        ),
     }
 }

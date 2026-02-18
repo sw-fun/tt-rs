@@ -8,8 +8,8 @@
 use tt_rs_core::WidgetId;
 use tt_rs_drag::{CopySource, Draggable, DropEvent, Position};
 use tt_rs_ui::{
-    Footer, HelpButton, HelpPanel, TextPane, Tooltip, TooltipLayer, TooltipPosition, UserLevel,
-    UserLevelSelector, WorkspaceButton, WorkspaceMenu, WorkspaceMetadata,
+    Footer, HelpButton, HelpPanel, TextPane, Tooltip, TooltipLayer, TooltipPosition, TutorialMenu,
+    UserLevel, UserLevelSelector, WorkspaceButton, WorkspaceMenu, WorkspaceMetadata,
 };
 use wasm_bindgen::JsCast;
 use yew::prelude::*;
@@ -32,9 +32,11 @@ const Z_PLANE_TOOLS: i32 = 400;
 const Z_PLANE_TEXT_PANE: i32 = 450;
 const Z_PLANE_TOOLTIPS: i32 = 500;
 
+#[allow(clippy::too_many_arguments)]
 pub fn render_app(
     state: &AppState,
     help_open: bool,
+    tutorial_open: bool,
     workspace_open: bool,
     user_level: UserLevel,
     cbs: &Callbacks,
@@ -46,6 +48,14 @@ pub fn render_app(
             <div class="workspace-header">
                 <span class="header-title">{"tt-rs - Visual Programming Environment"}</span>
                 <WorkspaceButton on_click={cbs.on_workspace_open.clone()} />
+                <div class="tutorial-container">
+                    <button class="tutorial-button" onclick={cbs.on_tutorial_open.reform(|_| ())}>
+                        {"Tutorials"}
+                    </button>
+                    if tutorial_open {
+                        <TutorialMenu on_close={cbs.on_tutorial_close.clone()} />
+                    }
+                </div>
                 <UserLevelSelector level={user_level} on_change={cbs.on_level_change.clone()} />
             </div>
             <HelpButton on_click={cbs.on_help_open.clone()} />
@@ -79,6 +89,17 @@ pub fn render_app(
                 // Z-plane 500: Tooltips (highest)
                 { render_z_plane(Z_PLANE_TOOLTIPS, html! { <TooltipLayer /> }) }
             </div>
+            // Status message bar (shows robot errors, etc.)
+            if let Some(ref msg) = state.status_message {
+                <div class="status-bar status-error">
+                    <span class="status-icon">{"⚠️"}</span>
+                    <span class="status-message">{ msg }</span>
+                </div>
+            }
+            // Inspection modal (shows widget details when magnifier is used)
+            if let Some(ref content) = state.inspection_modal {
+                { render_inspection_modal(content, cbs.on_close_inspection.clone()) }
+            }
             <Footer />
         </div>
     }
@@ -273,6 +294,45 @@ fn draggable_text_pane(props: &DraggableTextPaneProps) -> Html {
             onmouseleave={on_mouse_up}
         >
             { for props.children.iter() }
+        </div>
+    }
+}
+
+/// Renders the inspection modal showing widget details.
+fn render_inspection_modal(content: &str, on_close: Callback<()>) -> Html {
+    // Split content into title (first line) and body (rest)
+    let lines: Vec<&str> = content.lines().collect();
+    let title = lines.first().copied().unwrap_or("Inspection");
+    let body = lines.get(1..).map(|l| l.join("\n")).unwrap_or_default();
+
+    let on_overlay_click = {
+        let on_close = on_close.clone();
+        Callback::from(move |_: MouseEvent| {
+            on_close.emit(());
+        })
+    };
+
+    let on_close_click = {
+        let on_close = on_close.clone();
+        Callback::from(move |_: MouseEvent| {
+            on_close.emit(());
+        })
+    };
+
+    // Prevent clicks on modal content from closing
+    let on_modal_click = Callback::from(|e: MouseEvent| {
+        e.stop_propagation();
+    });
+
+    html! {
+        <div class="inspection-modal-overlay" onclick={on_overlay_click}>
+            <div class="inspection-modal" onclick={on_modal_click}>
+                <div class="inspection-modal-header">
+                    <h3 class="inspection-modal-title">{ title }</h3>
+                    <button class="inspection-modal-close" onclick={on_close_click}>{ "\u{00D7}" }</button>
+                </div>
+                <pre class="inspection-modal-content">{ body }</pre>
+            </div>
         </div>
     }
 }

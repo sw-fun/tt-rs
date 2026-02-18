@@ -3,13 +3,16 @@
 use std::collections::HashMap;
 
 use tt_rs_bird::Bird;
+use tt_rs_core::WidgetId;
 use tt_rs_drag::Position;
 use tt_rs_dropzone::DropZone;
 use tt_rs_nest::Nest;
 use tt_rs_number::{ArithOperator, Number};
 use tt_rs_robot::Robot;
 use tt_rs_scales::Scales;
+use tt_rs_sensor::{Sensor, SensorType};
 use tt_rs_text::Text;
+use tt_rs_ui::UserLevel;
 use tt_rs_vacuum::Vacuum;
 use tt_rs_wand::Wand;
 
@@ -18,6 +21,15 @@ use crate::state::AppState;
 use crate::widget_item::WidgetItem;
 
 use super::data::*;
+
+/// Extract the required UserLevel from a Workspace's metadata.
+pub fn workspace_user_level(workspace: &Workspace) -> UserLevel {
+    match workspace.metadata.user_level.as_str() {
+        "tt2" => UserLevel::Tt2,
+        "tt3" => UserLevel::Tt3,
+        _ => UserLevel::Tt1,
+    }
+}
 
 /// Convert AppState to a serializable Workspace.
 pub fn to_workspace(state: &AppState, metadata: WorkspaceMetadata) -> Workspace {
@@ -69,6 +81,9 @@ fn get_widget_name(data: &WidgetData) -> Option<String> {
     match data {
         WidgetData::Number(n) => n.name.clone(),
         WidgetData::Robot(r) => r.name.clone(),
+        WidgetData::Sensor(s) => s.name.clone(),
+        WidgetData::Nest(n) => n.name.clone(),
+        WidgetData::Bird(b) => b.name.clone(),
         WidgetData::DropZone(dz) => dz.role.clone(),
         // Other widget types don't have names yet (add as needed)
         _ => None,
@@ -85,6 +100,8 @@ pub fn from_workspace(workspace: &Workspace) -> AppState {
     let mut widget_names = HashMap::new();
     let mut box_names = HashMap::new();
     let mut dropzone_roles = HashMap::new();
+    let mut nest_names: HashMap<String, WidgetId> = HashMap::new();
+    let mut bird_pairings: Vec<(WidgetId, String)> = Vec::new();
 
     // Deserialize standalone widgets
     for widget_data in &workspace.widgets {
@@ -111,6 +128,43 @@ pub fn from_workspace(workspace: &Workspace) -> AppState {
             continue;
         }
 
+        // Track nests by name for bird pairing
+        if let WidgetData::Nest(nest_data) = widget_data {
+            if let Some(ref nest_name) = nest_data.name {
+                if let Some((item, pos)) = data_to_widget(widget_data) {
+                    let id = item.id();
+                    nest_names.insert(nest_name.clone(), id);
+                    positions.insert(id, pos);
+                    widgets.insert(id, item);
+                    if let Some(n) = name {
+                        widget_names.insert(n, id);
+                    }
+                }
+            } else if let Some((item, pos)) = data_to_widget(widget_data) {
+                let id = item.id();
+                positions.insert(id, pos);
+                widgets.insert(id, item);
+            }
+            continue;
+        }
+
+        // Track birds that need pairing
+        if let WidgetData::Bird(bird_data) = widget_data {
+            if let Some((item, pos)) = data_to_widget(widget_data) {
+                let id = item.id();
+                positions.insert(id, pos);
+                widgets.insert(id, item);
+                if let Some(n) = name {
+                    widget_names.insert(n, id);
+                }
+                // Record pairing to resolve after all widgets loaded
+                if let Some(ref nest_name) = bird_data.paired_nest_name {
+                    bird_pairings.push((id, nest_name.clone()));
+                }
+            }
+            continue;
+        }
+
         if let Some((item, pos)) = data_to_widget(widget_data) {
             let id = item.id();
             positions.insert(id, pos);
@@ -120,6 +174,18 @@ pub fn from_workspace(workspace: &Workspace) -> AppState {
             if let Some(n) = name {
                 widget_names.insert(n, id);
             }
+        }
+    }
+
+    // Pair birds with their nests
+    for (bird_id, nest_name) in bird_pairings {
+        if let Some(&nest_id) = nest_names.get(&nest_name) {
+            if let Some(WidgetItem::Bird(bird)) = widgets.get_mut(&bird_id) {
+                bird.pair_with_nest(nest_id);
+                log::info!("Paired bird {} with nest {}", bird_id, nest_id);
+            }
+        } else {
+            log::warn!("Bird {} references unknown nest '{}'", bird_id, nest_name);
         }
     }
 
@@ -169,6 +235,8 @@ pub fn from_workspace(workspace: &Workspace) -> AppState {
         box_names,
         dropzone_roles,
         executing_robot_id: None,
+        status_message: None,
+        inspection_modal: None,
     }
 }
 
@@ -203,14 +271,17 @@ fn widget_to_data(widget: &WidgetItem, pos: &Position) -> Option<WidgetData> {
         WidgetItem::Vacuum(_) => Some(WidgetData::Vacuum(VacuumData { position })),
         WidgetItem::Wand(_) => Some(WidgetData::Wand(WandData { position })),
         WidgetItem::Nest(nest) => Some(WidgetData::Nest(NestData {
+            name: None, // Names are only used in puzzle files
             position,
             is_copy_source: nest.is_copy_source(),
             contents: vec![], // TODO: serialize nest contents
         })),
         WidgetItem::Bird(bird) => Some(WidgetData::Bird(BirdData {
+            name: None, // Names are only used in puzzle files
             position,
             is_copy_source: bird.is_copy_source(),
             paired_nest_index: None, // TODO: track paired nest
+            paired_nest_name: None,
         })),
         WidgetItem::DropZone(dz) => Some(WidgetData::DropZone(DropZoneData {
             label: dz.label().to_string(),
@@ -220,6 +291,17 @@ fn widget_to_data(widget: &WidgetItem, pos: &Position) -> Option<WidgetData> {
             on_success_url: dz.on_success_url().map(|s| s.to_string()),
             on_success_message: dz.on_success_message().map(|s| s.to_string()),
         })),
+        WidgetItem::Sensor(s) => Some(WidgetData::Sensor(SensorData {
+            name: None, // Names are only used in puzzle files for targeting
+            position,
+            sensor_type: match s.sensor_type() {
+                SensorType::EpochMillis => "time".to_string(),
+                SensorType::Random => "random".to_string(),
+            },
+            is_copy_source: s.is_copy_source(),
+        })),
+        // Magnifier is a tool, not saved in workspaces (recreated from palette)
+        WidgetItem::Magnifier(_) => None,
     }
 }
 
@@ -310,6 +392,20 @@ fn data_to_widget(data: &WidgetData) -> Option<(WidgetItem, Position)> {
                 Position::new(dz.position.x, dz.position.y),
             ))
         }
+        WidgetData::Sensor(s) => {
+            let mut sensor = if s.sensor_type == "random" {
+                Sensor::new_random()
+            } else {
+                Sensor::new_time()
+            };
+            if s.is_copy_source {
+                sensor = sensor.as_copy_source();
+            }
+            Some((
+                WidgetItem::Sensor(sensor),
+                Position::new(s.position.x, s.position.y),
+            ))
+        }
         WidgetData::Box(_) => {
             // Box patterns are only used inside expected patterns, not as standalone widgets
             None
@@ -379,6 +475,7 @@ fn operator_to_string(op: ArithOperator) -> String {
         ArithOperator::Subtract => "-".to_string(),
         ArithOperator::Multiply => "*".to_string(),
         ArithOperator::Divide => "/".to_string(),
+        ArithOperator::Modulo => "%".to_string(),
     }
 }
 
@@ -387,6 +484,7 @@ fn string_to_operator(s: &str) -> ArithOperator {
         "-" => ArithOperator::Subtract,
         "*" => ArithOperator::Multiply,
         "/" => ArithOperator::Divide,
+        "%" => ArithOperator::Modulo,
         _ => ArithOperator::Add,
     }
 }

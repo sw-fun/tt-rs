@@ -1,0 +1,76 @@
+{
+  "metadata": {
+    "id": "tutorial-robot-sensor",
+    "name": "Tutorial: Robot with Sensors",
+    "description": "Train a robot to process sensor values and send results via bird",
+    "user_level": "tt3",
+    "is_bundled": true
+  },
+  "widgets": [
+    {
+      "type": "number",
+      "name": "mod-tool",
+      "numerator": 10,
+      "denominator": 1,
+      "operator": "%",
+      "position": { "x": 50, "y": 200 },
+      "is_copy_source": true
+    },
+    {
+      "type": "sensor",
+      "name": "random-sensor",
+      "sensor_type": "random",
+      "position": { "x": 50, "y": 120 },
+      "is_copy_source": false
+    },
+    {
+      "type": "robot",
+      "name": "robot",
+      "position": { "x": 50, "y": 350 }
+    },
+    {
+      "type": "bird",
+      "name": "messenger-bird",
+      "position": { "x": 350, "y": 200 },
+      "is_copy_source": false,
+      "paired_nest_name": "results-nest"
+    },
+    {
+      "type": "nest",
+      "name": "results-nest",
+      "position": { "x": 350, "y": 120 },
+      "is_copy_source": false
+    }
+  ],
+  "boxes": [],
+  "notes": "Tutorial: Robot with Sensors & Bird/Nest\n\nSENSORS produce values when clicked:\n- Die sensor: random (0-999999)\n- Clock sensor: time in milliseconds\n\nTHE CHALLENGE:\nBig numbers are hard to use!\nWe need MODULO to get small ones.\n\nWATCH THE DEMO (click 'Show Me'):\n\n1. START TRAINING:\n   Click robot (yellow glow)\n\n2. CLICK SENSOR:\n   Click the die to get a random number\n\n3. APPLY MODULO:\n   Drag %10 onto the number\n   Result: last digit (0-9)!\n\n4. SEND VIA BIRD:\n   Drag result onto the bird\n   Bird delivers to the nest!\n\n5. STOP TRAINING:\n   Click robot to finish\n\nTRY IT YOURSELF:\nClick robot to run it again!\nEach run produces a new random digit.\n\nCOLLECTING RESULTS:\nClick the nest to take the top item.\n(Oldest items come out first - FIFO)\n\nMODULO MATH:\n123456 % 10 = 6 (last digit)\n123456 % 100 = 56 (last 2 digits)",
+  "notes_position": { "x": 480, "y": 60 },
+  "notes_size": [380, 480],
+  "demo_steps": [
+    { "action": "wait", "duration": 1500 },
+
+    { "action": "move_to_target", "target": { "type": "widget", "name": "robot" }, "duration": 800 },
+    { "action": "click" },
+    { "action": "wait", "duration": 1200 },
+
+    { "action": "move_to_target", "target": { "type": "widget", "name": "random-sensor" }, "duration": 600 },
+    { "action": "click" },
+    { "action": "wait", "duration": 1200 },
+
+    { "action": "move_to_target", "target": { "type": "widget", "name": "mod-tool" }, "duration": 600 },
+    { "action": "drag_start" },
+    { "action": "move_to", "x": 165, "y": 145, "duration": 1000 },
+    { "action": "drag_end" },
+    { "action": "wait", "duration": 1500 },
+
+    { "action": "move_to", "x": 165, "y": 145, "duration": 400 },
+    { "action": "drag_start" },
+    { "action": "move_to_target", "target": { "type": "widget", "name": "messenger-bird" }, "duration": 1000 },
+    { "action": "drag_end" },
+    { "action": "wait", "duration": 1500 },
+
+    { "action": "move_to_target", "target": { "type": "widget", "name": "robot" }, "duration": 600 },
+    { "action": "click" },
+    { "action": "wait", "duration": 1500 }
+  ]
+}

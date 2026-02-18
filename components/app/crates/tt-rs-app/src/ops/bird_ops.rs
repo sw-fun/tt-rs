@@ -9,6 +9,7 @@
 use tt_rs_core::WidgetId;
 use tt_rs_drag::{DropEvent, Position};
 use tt_rs_hit_test::find_widget_at_excluding;
+use tt_rs_robot::Action;
 
 use crate::state::AppState;
 use crate::widget_item::WidgetItem;
@@ -44,6 +45,17 @@ pub fn handle_drop_on_bird(state: &mut AppState, id: WidgetId, mx: f64, my: f64)
                     return false;
                 }
             };
+
+            // Record training actions if a robot is being trained
+            // Record PickUp: where did widget come from?
+            let widget_type = dropped.type_name();
+            state.record_action(Action::PickUp {
+                path: format!("workspace:{}", widget_type),
+            });
+            // Record Drop to bird
+            state.record_action(Action::Drop {
+                path: format!("bird:{}", target_id),
+            });
 
             // Remove the dropped widget from workspace (bird consumes it)
             state.widgets.remove(&id);

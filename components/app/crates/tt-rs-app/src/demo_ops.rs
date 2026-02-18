@@ -6,8 +6,9 @@ use tt_rs_core::WidgetId;
 use tt_rs_hit_test::find_widget_at_excluding;
 use yew::UseStateHandle;
 
-use crate::ops::handle_dropzone_drop;
+use crate::ops::{handle_drop_on_bird, handle_dropzone_drop, handle_number_on_number};
 use crate::state::AppState;
+use crate::widget_item::WidgetItem;
 use crate::workspace::DemoTarget;
 
 /// Widget dimensions for center calculation.
@@ -148,6 +149,22 @@ pub fn perform_drop(
                 }
             }
         } else {
+            // Try arithmetic operation (number on number)
+            if handle_number_on_number(&mut new_state, dragged_id, x, y) {
+                log::info!("Demo: arithmetic operation completed");
+                app_state.set(new_state);
+                dirty.set(true);
+                return;
+            }
+
+            // Try bird delivery (widget on bird)
+            if handle_drop_on_bird(&mut new_state, dragged_id, x, y) {
+                log::info!("Demo: bird delivery completed");
+                app_state.set(new_state);
+                dirty.set(true);
+                return;
+            }
+
             // Check if target is a drop zone
             if let Some(crate::widget_item::WidgetItem::DropZone(_)) =
                 new_state.widgets.get(&target_id)
@@ -168,7 +185,7 @@ pub fn perform_drop(
 }
 
 /// Perform a click operation at the given coordinates.
-/// Handles robot clicks (toggle training/execute) for demo playback.
+/// Handles robot clicks (toggle training/execute) and sensor clicks for demo playback.
 pub fn perform_click(
     app_state: &UseStateHandle<AppState>,
     dirty: &UseStateHandle<bool>,
@@ -182,14 +199,62 @@ pub fn perform_click(
         // Check if it's a robot
         if let Some(crate::widget_item::WidgetItem::Robot(_)) = new_state.widgets.get(&target_id) {
             log::info!("Demo click: clicking on robot {:?}", target_id);
-            // Use the robot click logic
             handle_robot_click_demo(&mut new_state, target_id);
             app_state.set(new_state);
             dirty.set(true);
-        } else {
-            log::info!("Demo click: clicked on non-robot widget {:?}", target_id);
+            return;
         }
+
+        // Check if it's a sensor
+        let sensor_clone = match new_state.widgets.get(&target_id) {
+            Some(crate::widget_item::WidgetItem::Sensor(s)) => Some(s.clone()),
+            _ => None,
+        };
+        if let Some(sensor) = sensor_clone {
+            log::info!("Demo click: clicking on sensor {:?}", target_id);
+            handle_sensor_click_demo(&mut new_state, target_id, sensor);
+            app_state.set(new_state);
+            dirty.set(true);
+            return;
+        }
+
+        log::info!(
+            "Demo click: clicked on non-interactive widget {:?}",
+            target_id
+        );
     }
+}
+
+/// Handle sensor click for demo: produce a number.
+fn handle_sensor_click_demo(state: &mut AppState, id: WidgetId, sensor: tt_rs_sensor::Sensor) {
+    use tt_rs_core::Widget;
+    use tt_rs_drag::Position;
+    use tt_rs_robot::Action;
+
+    // Record training action if a robot is training
+    state.record_action(Action::ClickSensor {
+        path: "workspace:sensor".to_string(),
+    });
+
+    // Produce a new number widget
+    let number = sensor.produce_number();
+    let number_id = number.id();
+
+    // Position the new number near the sensor
+    let sensor_pos = state.positions.get(&id).copied().unwrap_or_default();
+    let number_pos = Position::new(sensor_pos.x + 90.0, sensor_pos.y);
+
+    state
+        .widgets
+        .insert(number_id, crate::widget_item::WidgetItem::Number(number));
+    state.positions.insert(number_id, number_pos);
+
+    log::info!(
+        "Demo: Sensor {} produced number {} at {:?}",
+        id,
+        number_id,
+        number_pos
+    );
 }
 
 /// Handle robot click for demo: toggle training or execute.
@@ -272,5 +337,23 @@ fn find_box_hole_at(state: &AppState, box_id: WidgetId, x: f64, _y: f64) -> Opti
         Some(hole_index)
     } else {
         None
+    }
+}
+
+/// Copy a widget (for copy source dragging in demos).
+/// Returns a new WidgetItem with a fresh ID.
+pub fn copy_widget(widget: &WidgetItem, _source_id: &WidgetId) -> WidgetItem {
+    match widget {
+        WidgetItem::Number(n) => WidgetItem::Number(n.copy_number()),
+        WidgetItem::Text(t) => WidgetItem::Text(t.copy_text()),
+        WidgetItem::Scales(s) => WidgetItem::Scales(s.copy_scales()),
+        WidgetItem::Sensor(s) => WidgetItem::Sensor(s.copy_sensor()),
+        WidgetItem::Vacuum(v) => WidgetItem::Vacuum(v.copy_vacuum()),
+        WidgetItem::Wand(w) => WidgetItem::Wand(w.copy_wand()),
+        WidgetItem::Magnifier(m) => WidgetItem::Magnifier(m.copy_magnifier()),
+        WidgetItem::Robot(r) => WidgetItem::Robot(r.copy_robot()),
+        WidgetItem::Nest(n) => WidgetItem::Nest(n.copy_nest()),
+        WidgetItem::Bird(b) => WidgetItem::Bird(b.copy_bird()),
+        WidgetItem::DropZone(dz) => WidgetItem::DropZone(dz.copy_dropzone()),
     }
 }

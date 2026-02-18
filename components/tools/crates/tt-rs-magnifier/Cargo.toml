@@ -1,0 +1,10 @@
+[package]
+name = "tt-rs-magnifier"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+yew.workspace = true
+tt-rs-core.workspace = true

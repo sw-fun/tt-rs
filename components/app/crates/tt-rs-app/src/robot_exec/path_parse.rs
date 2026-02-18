@@ -33,3 +33,23 @@ pub fn parse_workspace_type_path(path: &str) -> Option<&str> {
         None
     }
 }
+
+/// Parse "bird:123" -> WidgetId of the bird.
+pub fn parse_bird_path(path: &str) -> Option<WidgetId> {
+    let parts: Vec<&str> = path.split(':').collect();
+    if parts.len() == 2 && parts[0] == "bird" {
+        parts[1].parse::<u64>().ok().map(WidgetId::from_u64)
+    } else {
+        None
+    }
+}
+
+/// Parse "sensor:123" -> WidgetId of the sensor.
+pub fn parse_sensor_path(path: &str) -> Option<WidgetId> {
+    let parts: Vec<&str> = path.split(':').collect();
+    if parts.len() == 2 && parts[0] == "sensor" {
+        parts[1].parse::<u64>().ok().map(WidgetId::from_u64)
+    } else {
+        None
+    }
+}

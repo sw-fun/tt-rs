@@ -4,16 +4,18 @@
 //! - Col 1: Number stacks (+1, +5, -1, *2, /2)
 //! - Col 2: Boxes (2-hole, 3-hole)
 //! - Col 3: tt1 tools (0, Scales, Vacuum, Wand, Robot)
-//! - Col 4: tt2 tools (Nest) - only visible in tt2 mode
-//! - Col 5+: Reserved for future tt3, tt4 tools
+//! - Col 4: tt2 tools (Nest) - only visible in tt2+ mode
+//! - Col 5: tt3 tools (Sensors) - only visible in tt3 mode
 
 use std::collections::HashMap;
 use tt_rs_core::WidgetId;
 use tt_rs_drag::Position;
+use tt_rs_magnifier::Magnifier;
 use tt_rs_nest::Nest;
 use tt_rs_number::{ArithOperator, Number};
 use tt_rs_robot::Robot;
 use tt_rs_scales::Scales;
+use tt_rs_sensor::Sensor;
 use tt_rs_vacuum::Vacuum;
 use tt_rs_wand::Wand;
 
@@ -27,6 +29,8 @@ const COL_NUMBERS: f64 = 20.0;
 const COL_BOXES: f64 = 130.0;
 const COL_TT1_TOOLS: f64 = 300.0;
 const COL_TT2_TOOLS: f64 = 400.0;
+// tt3 sensors go in same column as tt2, below the nest
+const TT3_START_ROW: usize = 1; // Start below first tt2 tool (nest)
 
 /// Initialize demo widgets and positions.
 pub fn init_widgets() -> (HashMap<WidgetId, WidgetItem>, HashMap<WidgetId, Position>) {
@@ -47,9 +51,17 @@ pub fn init_widgets() -> (HashMap<WidgetId, WidgetItem>, HashMap<WidgetId, Posit
         widgets.insert(w.id(), w);
     }
 
-    // Column 4: tt2 tools (Nest - only visible in tt2 mode)
+    // Column 4: tt2 tools (Nest - only visible in tt2+ mode)
     for (i, w) in tt2_tools().into_iter().enumerate() {
         let pos = Position::new(COL_TT2_TOOLS, START_Y + (i as f64) * ROW_SPACING);
+        positions.insert(w.id(), pos);
+        widgets.insert(w.id(), w);
+    }
+
+    // tt3 tools (Sensors) - same column as tt2 but below the nest
+    for (i, w) in tt3_tools().into_iter().enumerate() {
+        let row = TT3_START_ROW + i;
+        let pos = Position::new(COL_TT2_TOOLS, START_Y + (row as f64) * ROW_SPACING);
         positions.insert(w.id(), pos);
         widgets.insert(w.id(), w);
     }
@@ -78,6 +90,7 @@ fn number_stacks() -> Vec<WidgetItem> {
         WidgetItem::Number(arith_tool(1, ArithOperator::Subtract)),
         WidgetItem::Number(arith_tool(2, ArithOperator::Multiply)),
         WidgetItem::Number(arith_tool(2, ArithOperator::Divide)),
+        WidgetItem::Number(arith_tool(10, ArithOperator::Modulo)),
     ]
 }
 
@@ -94,6 +107,16 @@ fn tt1_tools() -> Vec<WidgetItem> {
 fn tt2_tools() -> Vec<WidgetItem> {
     // Note: Bird is NOT a copy source - birds are created by "hatching" (copying) a nest
     vec![WidgetItem::Nest(Nest::new().as_copy_source())]
+}
+
+fn tt3_tools() -> Vec<WidgetItem> {
+    // Sensors: click to produce a number with time or random value
+    // Magnifier: inspect widgets to see their internal state (e.g., robot training)
+    vec![
+        WidgetItem::Sensor(Sensor::new_time().as_copy_source()),
+        WidgetItem::Sensor(Sensor::new_random().as_copy_source()),
+        WidgetItem::Magnifier(Magnifier::new()),
+    ]
 }
 
 fn arith_tool(v: i64, op: ArithOperator) -> Number {

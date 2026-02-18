@@ -18,6 +18,8 @@ use crate::state::{default_notes_for_level, AppState};
 pub struct Callbacks {
     pub on_help_open: Callback<()>,
     pub on_help_close: Callback<()>,
+    pub on_tutorial_open: Callback<()>,
+    pub on_tutorial_close: Callback<()>,
     pub on_level_change: Callback<UserLevel>,
     pub on_box_drag_start: Callback<DragStartEvent>,
     pub on_box_drag_end: Callback<DragEndEvent>,
@@ -40,12 +42,15 @@ pub struct Callbacks {
     // Tutorial action callbacks
     pub on_show_me: Option<Callback<()>>,
     pub on_reset: Option<Callback<()>>,
+    // Inspection modal callback
+    pub on_close_inspection: Callback<()>,
 }
 
 /// Configuration for creating callbacks.
 pub struct CallbackConfig {
     pub state: UseStateHandle<AppState>,
     pub help_open: UseStateHandle<bool>,
+    pub tutorial_open: UseStateHandle<bool>,
     pub user_level: UseStateHandle<UserLevel>,
     pub workspace_open: UseStateHandle<bool>,
     pub dragged_box_id: Rc<RefCell<Option<WidgetId>>>,
@@ -60,6 +65,7 @@ pub fn create_callbacks(cfg: CallbackConfig) -> Callbacks {
     let CallbackConfig {
         state,
         help_open,
+        tutorial_open,
         user_level,
         workspace_open,
         dragged_box_id,
@@ -76,6 +82,14 @@ pub fn create_callbacks(cfg: CallbackConfig) -> Callbacks {
         on_help_close: {
             let h = help_open;
             Callback::from(move |_| h.set(false))
+        },
+        on_tutorial_open: {
+            let t = tutorial_open.clone();
+            Callback::from(move |_| t.set(true))
+        },
+        on_tutorial_close: {
+            let t = tutorial_open;
+            Callback::from(move |_| t.set(false))
         },
         on_level_change: {
             let dirty = dirty.clone();
@@ -218,6 +232,15 @@ pub fn create_callbacks(cfg: CallbackConfig) -> Callbacks {
                     dragged_is_box: false,
                 });
             }))
+        },
+        // Inspection modal close callback
+        on_close_inspection: {
+            let s = state.clone();
+            Callback::from(move |_| {
+                let mut new_state = (*s).clone();
+                new_state.inspection_modal = None;
+                s.set(new_state);
+            })
         },
         // Reset callback - always available (sandbox resets to default, puzzles reload)
         on_reset: Some({

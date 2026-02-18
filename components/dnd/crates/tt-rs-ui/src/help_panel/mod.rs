@@ -6,6 +6,8 @@
 mod advanced;
 mod basics;
 mod messaging;
+mod sensors;
+mod tutorials;
 
 use crate::accordion::{Accordion, AccordionSection};
 use crate::slide_panel::SlidePanel;
@@ -50,6 +52,7 @@ fn render_level_content(level: UserLevel) -> Html {
     match level {
         UserLevel::Tt1 => render_tt1_content(),
         UserLevel::Tt2 => render_tt2_content(),
+        UserLevel::Tt3 => render_tt3_content(),
     }
 }
 
@@ -57,7 +60,10 @@ fn render_level_content(level: UserLevel) -> Html {
 fn render_tt1_content() -> Html {
     html! {
         <>
-            <AccordionSection title="Getting Started" default_open={true}>
+            <AccordionSection title="Tutorials" default_open={true}>
+                { tutorials::tutorials_content(UserLevel::Tt1) }
+            </AccordionSection>
+            <AccordionSection title="Getting Started">
                 { basics::getting_started_content(UserLevel::Tt1) }
             </AccordionSection>
             <AccordionSection title="Numbers & Arithmetic">
@@ -79,11 +85,30 @@ fn render_tt1_content() -> Html {
     }
 }
 
-/// tt2 content: Messaging features only.
+/// tt2 content: Messaging features + tutorials.
 fn render_tt2_content() -> Html {
     html! {
-        <AccordionSection title="Birds & Nests (Messaging)" default_open={true}>
-            { messaging::messaging_content() }
-        </AccordionSection>
+        <>
+            <AccordionSection title="Tutorials" default_open={true}>
+                { tutorials::tutorials_content(UserLevel::Tt2) }
+            </AccordionSection>
+            <AccordionSection title="Birds & Nests (Messaging)">
+                { messaging::messaging_content() }
+            </AccordionSection>
+        </>
+    }
+}
+
+/// tt3 content: Sensors features + tutorials.
+fn render_tt3_content() -> Html {
+    html! {
+        <>
+            <AccordionSection title="Tutorials" default_open={true}>
+                { tutorials::tutorials_content(UserLevel::Tt3) }
+            </AccordionSection>
+            <AccordionSection title="Sensors (Time & Random)">
+                { sensors::sensors_content() }
+            </AccordionSection>
+        </>
     }
 }

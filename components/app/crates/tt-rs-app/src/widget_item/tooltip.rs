@@ -1,6 +1,7 @@
 //! Tooltip information for widget items.
 
 use tt_rs_number::ArithOperator;
+use tt_rs_sensor::SensorType;
 
 use super::WidgetItem;
 
@@ -35,6 +36,12 @@ const TOOLTIP_NUMBER_DIV: TooltipInfo = TooltipInfo {
     hint: "Drag onto a number to divide by this value.",
 };
 
+const TOOLTIP_NUMBER_MOD: TooltipInfo = TooltipInfo {
+    title: "Modulo Tool",
+    description: "Click to create a modulo operation.",
+    hint: "Drag onto a number to get the remainder when divided by this value.",
+};
+
 const TOOLTIP_NUMBER: TooltipInfo = TooltipInfo {
     title: "Number",
     description: "A numeric value you can manipulate.",
@@ -65,6 +72,12 @@ const TOOLTIP_WAND: TooltipInfo = TooltipInfo {
     hint: "Drop on any widget to create a duplicate.",
 };
 
+const TOOLTIP_MAGNIFIER: TooltipInfo = TooltipInfo {
+    title: "Magnifier",
+    description: "Inspects widgets to show their internal state.",
+    hint: "Drop on a robot to see its training steps.",
+};
+
 const TOOLTIP_ROBOT: TooltipInfo = TooltipInfo {
     title: "Robot",
     description: "Learns by watching your actions and can repeat them.",
@@ -89,6 +102,18 @@ const TOOLTIP_DROPZONE: TooltipInfo = TooltipInfo {
     hint: "Create the requested item and drop it here.",
 };
 
+const TOOLTIP_SENSOR_TIME: TooltipInfo = TooltipInfo {
+    title: "Time Sensor",
+    description: "Produces the current time as a number.",
+    hint: "Click to generate a number with the current epoch milliseconds.",
+};
+
+const TOOLTIP_SENSOR_RANDOM: TooltipInfo = TooltipInfo {
+    title: "Random Sensor",
+    description: "Produces a random number.",
+    hint: "Click to generate a random number (0-999999).",
+};
+
 /// Get tooltip information for a widget item.
 pub fn tooltip_info(item: &WidgetItem) -> &'static TooltipInfo {
     match item {
@@ -97,12 +122,18 @@ pub fn tooltip_info(item: &WidgetItem) -> &'static TooltipInfo {
             ArithOperator::Subtract => &TOOLTIP_NUMBER_SUB,
             ArithOperator::Multiply => &TOOLTIP_NUMBER_MUL,
             ArithOperator::Divide => &TOOLTIP_NUMBER_DIV,
+            ArithOperator::Modulo => &TOOLTIP_NUMBER_MOD,
         },
         WidgetItem::Number(_) => &TOOLTIP_NUMBER,
         WidgetItem::Text(_) => &TOOLTIP_TEXT,
         WidgetItem::Scales(_) => &TOOLTIP_SCALES,
+        WidgetItem::Sensor(s) => match s.sensor_type() {
+            SensorType::EpochMillis => &TOOLTIP_SENSOR_TIME,
+            SensorType::Random => &TOOLTIP_SENSOR_RANDOM,
+        },
         WidgetItem::Vacuum(_) => &TOOLTIP_VACUUM,
         WidgetItem::Wand(_) => &TOOLTIP_WAND,
+        WidgetItem::Magnifier(_) => &TOOLTIP_MAGNIFIER,
         WidgetItem::Robot(_) => &TOOLTIP_ROBOT,
         WidgetItem::Nest(_) => &TOOLTIP_NEST,
         WidgetItem::Bird(_) => &TOOLTIP_BIRD,

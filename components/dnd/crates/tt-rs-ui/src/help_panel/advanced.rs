@@ -96,6 +96,12 @@ fn level_specific_tips(level: crate::user_level::UserLevel) -> yew::Html {
                 {"Pair birds with nests before trying to send messages"}
             </li>
         },
+        UserLevel::Tt3 => yew::html! {
+            <li>
+                <strong>{"Sensors: "}</strong>
+                {"Click a sensor to produce a number - time or random"}
+            </li>
+        },
     }
 }
 

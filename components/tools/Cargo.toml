@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "crates/tt-rs-wand",
     "crates/tt-rs-vacuum",
+    "crates/tt-rs-magnifier",
 ]
 
 [workspace.package]

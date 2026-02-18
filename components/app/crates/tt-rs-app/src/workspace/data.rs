@@ -48,7 +48,7 @@ pub struct Workspace {
 }
 
 /// Position in the workspace.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PositionData {
     pub x: f64,
     pub y: f64,
@@ -82,6 +82,8 @@ pub enum WidgetData {
     Bird(BirdData),
     #[serde(rename = "dropzone")]
     DropZone(DropZoneData),
+    #[serde(rename = "sensor")]
+    Sensor(SensorData),
     /// Box as a widget (for expected patterns in drop zones).
     #[serde(rename = "box")]
     Box(BoxPatternData),
@@ -194,9 +196,27 @@ pub struct WandData {
     pub position: PositionData,
 }
 
+/// Sensor widget data.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SensorData {
+    /// Unique name for semantic targeting in demos.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Position in workspace.
+    pub position: PositionData,
+    /// Sensor type (time or random).
+    pub sensor_type: String,
+    /// Whether this is a copy source.
+    #[serde(default)]
+    pub is_copy_source: bool,
+}
+
 /// Nest widget data.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NestData {
+    /// Unique name for semantic targeting in demos.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Position in workspace.
     pub position: PositionData,
     /// Whether this is a copy source.
@@ -210,6 +230,9 @@ pub struct NestData {
 /// Bird widget data.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BirdData {
+    /// Unique name for semantic targeting in demos.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Position in workspace.
     pub position: PositionData,
     /// Whether this is a copy source.
@@ -218,6 +241,9 @@ pub struct BirdData {
     /// Paired nest index (if paired).
     #[serde(default)]
     pub paired_nest_index: Option<usize>,
+    /// Paired nest name (alternative to index, for puzzle files).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub paired_nest_name: Option<String>,
 }
 
 /// Box widget data.
@@ -313,6 +339,9 @@ pub enum DemoStep {
     /// Move cursor to a semantic target (resolved to center at runtime).
     #[serde(rename = "move_to_target")]
     MoveToTarget { target: DemoTarget, duration: u32 },
+    /// Move cursor relative to current position.
+    #[serde(rename = "move_relative")]
+    MoveRelative { offset: PositionData, duration: u32 },
     /// Start dragging from current position.
     #[serde(rename = "drag_start")]
     DragStart,

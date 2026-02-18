@@ -28,6 +28,11 @@ impl Nest {
     pub fn peek_top(&self) -> Option<&dyn Widget> {
         self.messages.front().map(|m| m.as_ref())
     }
+
+    /// Returns an iterator over all messages (oldest first).
+    pub fn iter_messages(&self) -> impl Iterator<Item = &dyn Widget> {
+        self.messages.iter().map(|m| m.as_ref())
+    }
 }
 
 impl NestColor {

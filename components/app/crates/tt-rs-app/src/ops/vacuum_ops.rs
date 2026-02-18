@@ -91,10 +91,18 @@ fn is_deletable(state: &AppState, id: WidgetId) -> bool {
         .widgets
         .get(&id)
         .map(|w| {
-            !matches!(
+            // Tools are never deletable
+            if matches!(
                 w,
                 WidgetItem::Vacuum(_) | WidgetItem::Wand(_) | WidgetItem::Robot(_)
-            ) && !matches!(w, WidgetItem::Number(n) if n.is_copy_source())
+            ) {
+                return false;
+            }
+            // Copy sources (stacks) are never deletable - they're palette items
+            if w.is_copy_source() {
+                return false;
+            }
+            true
         })
         .unwrap_or(false)
 }

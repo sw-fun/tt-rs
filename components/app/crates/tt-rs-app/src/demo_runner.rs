@@ -95,6 +95,11 @@ pub fn process_next_step(state: &DemoState) -> Option<DemoState> {
             // Should be resolved before playback - skip if not resolved
             log::warn!("MoveToTarget step not resolved - skipping");
         }
+        DemoStep::MoveRelative { offset, duration } => {
+            new_state.cursor_x += offset.x;
+            new_state.cursor_y += offset.y;
+            new_state.transition_ms = *duration;
+        }
         DemoStep::DragStart => {
             new_state.is_dragging = true;
         }
@@ -126,6 +131,7 @@ pub fn get_step_delay(state: &DemoState) -> u32 {
         DemoStep::Wait { duration } => *duration,
         DemoStep::MoveTo { duration, .. } => *duration + 200, // Extra time for animation
         DemoStep::MoveToTarget { duration, .. } => *duration + 200, // Should be resolved
+        DemoStep::MoveRelative { duration, .. } => *duration + 200, // Extra time for animation
         DemoStep::DragStart => 400,
         DemoStep::DragEnd => 400,
         DemoStep::Click => 500, // Brief pause for click animation
