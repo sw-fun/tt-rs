@@ -459,7 +459,7 @@ function __wbg_get_imports() {
             return ret;
         },
         __wbindgen_cast_0000000000000007: function(arg0, arg1) {
-            // Cast intrinsic for `Closure(Closure { dtor_idx: 539, function: Function { arguments: [NamedExternref("KeyboardEvent")], shim_idx: 538, ret: Unit, inner_ret: Some(Unit) }, mutable: true }) -> Externref`.
+            // Cast intrinsic for `Closure(Closure { dtor_idx: 758, function: Function { arguments: [NamedExternref("KeyboardEvent")], shim_idx: 607, ret: Unit, inner_ret: Some(Unit) }, mutable: true }) -> Externref`.
             const ret = makeMutClosure(arg0, arg1, wasm.wasm_bindgen__closure__destroy__hbc7383285045e18f, wasm_bindgen__convert__closures_____invoke__hb95017f7b15e766f);
             return ret;
         },
