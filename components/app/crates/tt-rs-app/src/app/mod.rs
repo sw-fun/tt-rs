@@ -513,7 +513,7 @@ fn partition_into_planes(state: &AppState, level: UserLevel) -> ZPlanes<'_> {
                     | WidgetItem::Sensor(_)
                     | WidgetItem::Magnifier(_)
             ),
-            UserLevel::Tt2 => !matches!(w, WidgetItem::Sensor(_) | WidgetItem::Magnifier(_)),
+            UserLevel::Tt2 => !matches!(w, WidgetItem::Sensor(_)),
             UserLevel::Tt3 => true,
         }
     };

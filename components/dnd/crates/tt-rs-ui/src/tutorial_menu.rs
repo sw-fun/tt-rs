@@ -51,7 +51,6 @@ pub fn tutorial_menu(props: &TutorialMenuProps) -> Html {
                         <a href="#/tutorial/fill-box" onclick={on_tutorial_click.clone()}>{ "Fill the Box" }</a>
                         <a href="#/tutorial/add-numbers" onclick={on_tutorial_click.clone()}>{ "Add Numbers" }</a>
                         <a href="#/tutorial/copy-widget" onclick={on_tutorial_click.clone()}>{ "Copy Widgets" }</a>
-                        <a href="#/tutorial/train-robot" onclick={on_tutorial_click.clone()}>{ "Train a Robot" }</a>
                     </div>
                 }
             </div>
@@ -83,6 +82,7 @@ pub fn tutorial_menu(props: &TutorialMenuProps) -> Html {
                 </button>
                 if *expanded_level == Some("tt3") {
                     <div class="tutorial-items">
+                        <a href="#/tutorial/train-robot" onclick={on_tutorial_click.clone()}>{ "Train a Robot" }</a>
                         <a href="#/tutorial/robot-sensor" onclick={on_tutorial_click.clone()}>{ "Robot with Sensors" }</a>
                     </div>
                 }

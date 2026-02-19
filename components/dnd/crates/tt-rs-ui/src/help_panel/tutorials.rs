@@ -40,10 +40,6 @@ fn tt1_tutorials() -> Html {
                     <a href="#/tutorial/copy-widget">{ "Copy Widgets" }</a>
                     { " - Use the wand to make copies" }
                 </li>
-                <li>
-                    <a href="#/tutorial/train-robot">{ "Train a Robot" }</a>
-                    { " - Teach a robot by showing it what to do" }
-                </li>
             </ul>
         </>
     }
@@ -66,8 +62,12 @@ fn tt2_tutorials() -> Html {
 fn tt3_tutorials() -> Html {
     html! {
         <>
-            <h4>{ "tt3 - Sensor Tutorials" }</h4>
+            <h4>{ "tt3 - Robot & Sensor Tutorials" }</h4>
             <ul class="tutorial-list">
+                <li>
+                    <a href="#/tutorial/train-robot">{ "Train a Robot" }</a>
+                    { " - Teach a robot by showing it what to do" }
+                </li>
                 <li>
                     <a href="#/tutorial/robot-sensor">{ "Robot with Sensors" }</a>
                     { " - Combine robots, sensors, modulo, and bird messaging" }
