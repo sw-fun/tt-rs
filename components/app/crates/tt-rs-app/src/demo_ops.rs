@@ -8,6 +8,7 @@ use yew::UseStateHandle;
 
 use crate::ops::{
     handle_drop_on_bird, handle_dropzone_drop, handle_magnifier_drop, handle_number_on_number,
+    handle_wand_drop,
 };
 use crate::state::AppState;
 use crate::widget_item::WidgetItem;
@@ -176,6 +177,29 @@ pub fn perform_drop(
                 };
                 if handle_magnifier_drop(&mut new_state, dragged_id, x, y, &drop_event) {
                     log::info!("Demo: magnifier inspection completed");
+                    app_state.set(new_state);
+                    dirty.set(true);
+                    return;
+                }
+            }
+
+            // Try wand copy (wand on widget)
+            if new_state
+                .widgets
+                .get(&dragged_id)
+                .map(|w| w.is_wand())
+                .unwrap_or(false)
+            {
+                use tt_rs_drag::{DropEvent, Position};
+                let pos = Position::new(x, y);
+                let drop_event = DropEvent {
+                    widget_id: dragged_id,
+                    start_position: pos,
+                    position: pos,
+                    mouse_position: pos,
+                };
+                if handle_wand_drop(&mut new_state, dragged_id, x, y, &drop_event) {
+                    log::info!("Demo: wand copy completed");
                     app_state.set(new_state);
                     dirty.set(true);
                     return;
