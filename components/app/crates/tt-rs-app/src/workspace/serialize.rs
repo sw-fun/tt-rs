@@ -86,6 +86,7 @@ fn get_widget_name(data: &WidgetData) -> Option<String> {
         WidgetData::Nest(n) => n.name.clone(),
         WidgetData::Bird(b) => b.name.clone(),
         WidgetData::DropZone(dz) => dz.role.clone(),
+        WidgetData::Magnifier(m) => m.name.clone(),
         // Other widget types don't have names yet (add as needed)
         _ => None,
     }

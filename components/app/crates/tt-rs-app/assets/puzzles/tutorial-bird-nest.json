@@ -28,14 +28,14 @@
     {
       "type": "bird",
       "name": "messenger-bird",
-      "position": { "x": 200, "y": 200 },
+      "position": { "x": 150, "y": 200 },
       "is_copy_source": false,
       "paired_nest_name": "home-nest"
     },
     {
       "type": "nest",
       "name": "home-nest",
-      "position": { "x": 350, "y": 200 },
+      "position": { "x": 320, "y": 200 },
       "is_copy_source": false
     },
     {
@@ -45,7 +45,7 @@
     }
   ],
   "boxes": [],
-  "notes": "Tutorial: Bird & Nest Messaging\n\nBIRDS carry messages to their NEST.\nThey work like a mailbox system!\n\nTHE SETUP:\n- The blue bird is paired with the nest\n- Anything given to the bird goes to the nest\n- The nest collects messages in order (FIFO)\n\nWATCH THE DEMO (click 'Show Me'):\n\n1. DRAG A NUMBER TO THE BIRD:\n   The bird carries it to the nest\n\n2. SEND ANOTHER NUMBER:\n   Messages queue up in order\n\n3. INSPECT WITH MAGNIFIER:\n   See the queued messages!\n\n4. CLICK THE NEST:\n   Takes the oldest message out\n\nTRY IT YOURSELF:\n- Drag numbers onto the bird\n- Click the nest to retrieve them\n- Notice: first in = first out!\n\nUSE CASES:\n- Communication between robots\n- Collecting results over time\n- Asynchronous message passing",
+  "notes": "Tutorial: Bird & Nest Messaging\n\nBIRDS carry messages to their NEST.\nThey work like a mailbox system!\n\nTHE SETUP:\n- The blue bird is paired with the nest\n- Anything given to the bird goes to the nest\n- The nest collects messages in order (FIFO)\n\nWATCH THE DEMO (click 'Show Me'):\n\n1. DRAG A NUMBER TO THE BIRD:\n   The bird carries it to the nest\n\n2. SEND ANOTHER NUMBER:\n   Messages queue up in order\n\n3. INSPECT WITH MAGNIFIER:\n   See the FIFO queue contents!\n\nTRY IT YOURSELF:\n- Drag numbers onto the bird\n- Use magnifier to inspect the nest\n- Click the nest to retrieve messages\n- Notice: first in = first out!\n\nUSE CASES:\n- Communication between robots\n- Collecting results over time\n- Asynchronous message passing",
   "notes_position": { "x": 480, "y": 60 },
   "notes_size": [380, 480],
   "demo_steps": [
@@ -67,10 +67,6 @@
     { "action": "drag_start" },
     { "action": "move_to_target", "target": { "type": "widget", "name": "home-nest" }, "duration": 800 },
     { "action": "drag_end" },
-    { "action": "wait", "duration": 2500 },
-
-    { "action": "move_to_target", "target": { "type": "widget", "name": "home-nest" }, "duration": 600 },
-    { "action": "click" },
-    { "action": "wait", "duration": 1500 }
+    { "action": "wait", "duration": 4000 }
   ]
 }

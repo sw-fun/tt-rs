@@ -6,7 +6,9 @@ use tt_rs_core::WidgetId;
 use tt_rs_hit_test::find_widget_at_excluding;
 use yew::UseStateHandle;
 
-use crate::ops::{handle_drop_on_bird, handle_dropzone_drop, handle_number_on_number};
+use crate::ops::{
+    handle_drop_on_bird, handle_dropzone_drop, handle_magnifier_drop, handle_number_on_number,
+};
 use crate::state::AppState;
 use crate::widget_item::WidgetItem;
 use crate::workspace::DemoTarget;
@@ -155,6 +157,29 @@ pub fn perform_drop(
                 app_state.set(new_state);
                 dirty.set(true);
                 return;
+            }
+
+            // Try magnifier inspection (magnifier on widget)
+            if new_state
+                .widgets
+                .get(&dragged_id)
+                .map(|w| w.is_magnifier())
+                .unwrap_or(false)
+            {
+                use tt_rs_drag::{DropEvent, Position};
+                let pos = Position::new(x, y);
+                let drop_event = DropEvent {
+                    widget_id: dragged_id,
+                    start_position: pos,
+                    position: pos,
+                    mouse_position: pos,
+                };
+                if handle_magnifier_drop(&mut new_state, dragged_id, x, y, &drop_event) {
+                    log::info!("Demo: magnifier inspection completed");
+                    app_state.set(new_state);
+                    dirty.set(true);
+                    return;
+                }
             }
 
             // Try bird delivery (widget on bird)
