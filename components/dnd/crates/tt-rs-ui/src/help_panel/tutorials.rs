@@ -55,7 +55,8 @@ fn tt2_tutorials() -> Html {
             <h4>{ "tt2 - Messaging Tutorials" }</h4>
             <ul class="tutorial-list">
                 <li>
-                    <em>{ "(Coming soon: Bird & Nest messaging tutorial)" }</em>
+                    <a href="#/tutorial/bird-nest">{ "Bird & Nest Messaging" }</a>
+                    { " - Send messages between birds and nests" }
                 </li>
             </ul>
         </>

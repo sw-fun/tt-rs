@@ -67,7 +67,7 @@ pub fn tutorial_menu(props: &TutorialMenuProps) -> Html {
                 </button>
                 if *expanded_level == Some("tt2") {
                     <div class="tutorial-items">
-                        <span class="coming-soon">{ "(Coming soon)" }</span>
+                        <a href="#/tutorial/bird-nest" onclick={on_tutorial_click.clone()}>{ "Bird & Nest Messaging" }</a>
                     </div>
                 }
             </div>
@@ -83,7 +83,6 @@ pub fn tutorial_menu(props: &TutorialMenuProps) -> Html {
                 </button>
                 if *expanded_level == Some("tt3") {
                     <div class="tutorial-items">
-                        <a href="#/tutorial/train-robot" onclick={on_tutorial_click.clone()}>{ "Train a Robot" }</a>
                         <a href="#/tutorial/robot-sensor" onclick={on_tutorial_click.clone()}>{ "Robot with Sensors" }</a>
                     </div>
                 }

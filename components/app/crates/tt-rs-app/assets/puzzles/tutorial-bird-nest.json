@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "id": "tutorial-bird-nest",
+    "name": "Tutorial: Bird & Nest Messaging",
+    "description": "Learn to send messages between birds and nests",
+    "user_level": "tt2",
+    "is_bundled": true
+  },
+  "widgets": [
+    {
+      "type": "number",
+      "name": "num-1",
+      "numerator": 1,
+      "denominator": 1,
+      "operator": "+",
+      "position": { "x": 50, "y": 120 },
+      "is_copy_source": true
+    },
+    {
+      "type": "number",
+      "name": "num-5",
+      "numerator": 5,
+      "denominator": 1,
+      "operator": "+",
+      "position": { "x": 50, "y": 200 },
+      "is_copy_source": true
+    },
+    {
+      "type": "bird",
+      "name": "messenger-bird",
+      "position": { "x": 200, "y": 200 },
+      "is_copy_source": false,
+      "paired_nest_name": "home-nest"
+    },
+    {
+      "type": "nest",
+      "name": "home-nest",
+      "position": { "x": 350, "y": 200 },
+      "is_copy_source": false
+    },
+    {
+      "type": "magnifier",
+      "name": "inspector",
+      "position": { "x": 200, "y": 350 }
+    }
+  ],
+  "boxes": [],
+  "notes": "Tutorial: Bird & Nest Messaging\n\nBIRDS carry messages to their NEST.\nThey work like a mailbox system!\n\nTHE SETUP:\n- The blue bird is paired with the nest\n- Anything given to the bird goes to the nest\n- The nest collects messages in order (FIFO)\n\nWATCH THE DEMO (click 'Show Me'):\n\n1. DRAG A NUMBER TO THE BIRD:\n   The bird carries it to the nest\n\n2. SEND ANOTHER NUMBER:\n   Messages queue up in order\n\n3. CLICK THE NEST:\n   Takes the oldest message out\n\nTRY IT YOURSELF:\n- Drag numbers onto the bird\n- Click the nest to retrieve them\n- Notice: first in = first out!\n\nINSPECT WITH MAGNIFIER:\nDrag the magnifier onto the nest\nto see all queued messages!\n\nUSE CASES:\n- Communication between robots\n- Collecting results over time\n- Asynchronous message passing",
+  "notes_position": { "x": 480, "y": 60 },
+  "notes_size": [380, 480],
+  "demo_steps": [
+    { "action": "wait", "duration": 1000 },
+
+    { "action": "move_to_target", "target": { "type": "widget", "name": "num-1" }, "duration": 600 },
+    { "action": "drag_start" },
+    { "action": "move_to_target", "target": { "type": "widget", "name": "messenger-bird" }, "duration": 800 },
+    { "action": "drag_end" },
+    { "action": "wait", "duration": 1500 },
+
+    { "action": "move_to_target", "target": { "type": "widget", "name": "num-5" }, "duration": 600 },
+    { "action": "drag_start" },
+    { "action": "move_to_target", "target": { "type": "widget", "name": "messenger-bird" }, "duration": 800 },
+    { "action": "drag_end" },
+    { "action": "wait", "duration": 1500 },
+
+    { "action": "move_to_target", "target": { "type": "widget", "name": "home-nest" }, "duration": 600 },
+    { "action": "click" },
+    { "action": "wait", "duration": 1500 }
+  ]
+}
