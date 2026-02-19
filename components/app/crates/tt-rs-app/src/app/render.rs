@@ -9,7 +9,7 @@ use tt_rs_core::WidgetId;
 use tt_rs_drag::{CopySource, Draggable, DropEvent, Position};
 use tt_rs_ui::{
     Footer, HelpButton, HelpPanel, TextPane, Tooltip, TooltipLayer, TooltipPosition, TutorialMenu,
-    UserLevel, UserLevelSelector, WorkspaceButton, WorkspaceMenu, WorkspaceMetadata,
+    UserLevel, UserLevelSelector, WorkspaceMenu, WorkspaceMetadata,
 };
 use wasm_bindgen::JsCast;
 use yew::prelude::*;
@@ -47,7 +47,8 @@ pub fn render_app(
         <div class="workspace">
             <div class="workspace-header">
                 <span class="header-title">{"tt-rs - Visual Programming Environment"}</span>
-                <WorkspaceButton on_click={cbs.on_workspace_open.clone()} />
+                // WorkspaceButton hidden until examples and challenges are implemented
+                // <WorkspaceButton on_click={cbs.on_workspace_open.clone()} />
                 <div class="tutorial-container">
                     <button class="tutorial-button" onclick={cbs.on_tutorial_open.reform(|_| ())}>
                         {"Tutorials"}

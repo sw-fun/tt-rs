@@ -27,8 +27,7 @@ pub struct Callbacks {
     pub on_copy_source_click: Callback<CopySourceClickEvent>,
     pub on_move: Callback<(WidgetId, Position)>,
     pub on_drop: Callback<DropEvent>,
-    // Workspace callbacks
-    pub on_workspace_open: Callback<()>,
+    // Workspace callbacks (WorkspaceButton is hidden but menu still needs these)
     pub on_workspace_close: Callback<()>,
     pub on_workspace_save: Callback<SaveFormData>,
     pub on_workspace_load: Callback<String>,
@@ -88,7 +87,7 @@ pub fn create_callbacks(cfg: CallbackConfig) -> Callbacks {
             Callback::from(move |_| t.set(true))
         },
         on_tutorial_close: {
-            let t = tutorial_open;
+            let t = tutorial_open.clone();
             Callback::from(move |_| t.set(false))
         },
         on_level_change: {
@@ -96,7 +95,9 @@ pub fn create_callbacks(cfg: CallbackConfig) -> Callbacks {
             let pending_action = pending_action.clone();
             let user_level = user_level.clone();
             let s = state.clone();
+            let t = tutorial_open; // Close tutorial menu on level change
             Callback::from(move |level: UserLevel| {
+                t.set(false); // Close tutorial menu
                 if *dirty {
                     // Ask for confirmation before changing level
                     pending_action.set(Some(PendingAction::LevelChange(level)));
@@ -121,11 +122,7 @@ pub fn create_callbacks(cfg: CallbackConfig) -> Callbacks {
         on_copy_source_click: widget_handlers::create_copy_source(state.clone(), dirty.clone()),
         on_move: widget_handlers::create_move(state.clone(), dirty.clone()),
         on_drop: widget_handlers::create_widget_drop(state.clone(), dirty.clone()),
-        // Workspace callbacks
-        on_workspace_open: {
-            let w = workspace_open.clone();
-            Callback::from(move |_| w.set(true))
-        },
+        // Workspace callbacks (WorkspaceButton is hidden but menu still needs close)
         on_workspace_close: {
             let w = workspace_open.clone();
             Callback::from(move |_| w.set(false))

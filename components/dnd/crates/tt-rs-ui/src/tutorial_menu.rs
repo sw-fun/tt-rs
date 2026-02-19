@@ -1,5 +1,6 @@
 //! Tutorial menu component with level-based submenus.
 
+use wasm_bindgen::{closure::Closure, JsCast};
 use yew::prelude::*;
 
 /// Properties for the TutorialMenu component.
@@ -14,6 +15,66 @@ pub struct TutorialMenuProps {
 #[function_component(TutorialMenu)]
 pub fn tutorial_menu(props: &TutorialMenuProps) -> Html {
     let expanded_level = use_state(|| Option::<&'static str>::None);
+    let menu_ref = use_node_ref();
+
+    // Set up Escape key handler and click-outside handler
+    {
+        let on_close = props.on_close.clone();
+        let menu_ref = menu_ref.clone();
+        use_effect_with(on_close.clone(), move |on_close| {
+            let window = web_sys::window().unwrap();
+            let document = window.document().unwrap();
+
+            // Escape key handler
+            let on_close_key = on_close.clone();
+            let key_handler = Closure::wrap(Box::new(move |e: web_sys::KeyboardEvent| {
+                if e.key() == "Escape" {
+                    on_close_key.emit(());
+                }
+            }) as Box<dyn FnMut(_)>);
+            document
+                .add_event_listener_with_callback("keydown", key_handler.as_ref().unchecked_ref())
+                .unwrap();
+
+            // Click-outside handler
+            let on_close_click = on_close.clone();
+            let menu_ref_click = menu_ref.clone();
+            let click_handler = Closure::wrap(Box::new(move |e: web_sys::MouseEvent| {
+                // Check if click was outside the menu
+                if let Some(menu) = menu_ref_click.cast::<web_sys::Element>() {
+                    if let Some(target) = e.target() {
+                        if let Ok(target_node) = target.dyn_into::<web_sys::Node>() {
+                            if !menu.contains(Some(&target_node)) {
+                                on_close_click.emit(());
+                            }
+                        }
+                    }
+                }
+            }) as Box<dyn FnMut(_)>);
+            // Use capture phase to catch clicks before they reach other elements
+            document
+                .add_event_listener_with_callback_and_bool(
+                    "click",
+                    click_handler.as_ref().unchecked_ref(),
+                    true,
+                )
+                .unwrap();
+
+            // Cleanup
+            let doc = document.clone();
+            move || {
+                let _ = doc.remove_event_listener_with_callback(
+                    "keydown",
+                    key_handler.as_ref().unchecked_ref(),
+                );
+                let _ = doc.remove_event_listener_with_callback_and_bool(
+                    "click",
+                    click_handler.as_ref().unchecked_ref(),
+                    true,
+                );
+            }
+        });
+    }
 
     let toggle_level = {
         let expanded_level = expanded_level.clone();
@@ -34,7 +95,7 @@ pub fn tutorial_menu(props: &TutorialMenuProps) -> Html {
     };
 
     html! {
-        <div class="tutorial-menu">
+        <div class="tutorial-menu" ref={menu_ref}>
             <div class="tutorial-menu-header">{ "Tutorials" }</div>
 
             // tt1 - Basic Tutorials

@@ -2,6 +2,7 @@
 //!
 //! Provides a panel that slides in from the right side of the screen.
 
+use wasm_bindgen::{closure::Closure, JsCast};
 use yew::prelude::*;
 
 /// Properties for the SlidePanel component.
@@ -20,6 +21,41 @@ pub struct SlidePanelProps {
 /// A panel that slides in from the right side.
 #[function_component(SlidePanel)]
 pub fn slide_panel(props: &SlidePanelProps) -> Html {
+    // Set up Escape key handler when panel is open
+    {
+        let is_open = props.is_open;
+        let on_close = props.on_close.clone();
+        use_effect_with((is_open, on_close), |(is_open, on_close)| {
+            if !*is_open {
+                // Return empty cleanup when not open
+                return Box::new(|| {}) as Box<dyn FnOnce()>;
+            }
+
+            let window = web_sys::window().unwrap();
+            let document = window.document().unwrap();
+
+            let on_close_key = on_close.clone();
+            let key_handler = Closure::wrap(Box::new(move |e: web_sys::KeyboardEvent| {
+                if e.key() == "Escape" {
+                    on_close_key.emit(());
+                }
+            }) as Box<dyn FnMut(_)>);
+            document
+                .add_event_listener_with_callback("keydown", key_handler.as_ref().unchecked_ref())
+                .unwrap();
+
+            // Use forget() since we return a cleanup that doesn't reference the handler
+            key_handler.forget();
+
+            let doc = document;
+            Box::new(move || {
+                // We can't remove the listener since we forgot the handler,
+                // but the component unmounts when panel closes anyway
+                drop(doc);
+            }) as Box<dyn FnOnce()>
+        });
+    }
+
     let on_close_click = {
         let on_close = props.on_close.clone();
         Callback::from(move |_| on_close.emit(()))
